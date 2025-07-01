@@ -31,11 +31,13 @@
     }
 export function updateItem(key, updateCallback) {
         try {
-            const existingItem = storage.getItem(key);
+            const existingItem = localStorage.getItem(key);
             if (existingItem) {
                 const updatedItem = updateCallback(existingItem);
-                storage.setItem(key, updatedItem);
+                localStorage.setItem(key, updatedItem);
+                return;
             }
+            throw new Error();
         } catch (e) {
             console.error("Ошибка обновления item" ,e);
         }
