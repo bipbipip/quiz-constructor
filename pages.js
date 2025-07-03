@@ -1,10 +1,13 @@
 // components
 import { renderQuizList } from "./utils/render/renderQuizes.js";
+import { renderCreateQuiz } from "./utils/render/renderCreateQuiz.js";
+import {renderHomePage} from "./utils/render/renderHome.js";
 
 // utils
 import {render} from "./utils/render/render.js";
 
 import {getItem, setItem, updateItem, removeItem} from "./storage.js";
+
 window.addEventListener("hashchange", e => {
     const pageName = location.hash.replace("#", "");
     processPage(pageName);
@@ -15,11 +18,14 @@ const pages = {
     'home': {
         title: 'На главную',
         description: 'Основная страница конструктора',
+        appComponent: renderHomePage,
 
     },
     'create_test': {
         title: 'Создать тест',
         description: 'Здесь вы можете создать свой тест',
+        appComponent: renderCreateQuiz,
+
     },
 
     'solve_test': {
