@@ -15,7 +15,7 @@ export function renderCreateQuiz(app) {
                     <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
                     <button type="button" id="addQuestionBtn">Добавить вопрос</button>
                     <div id="questionContainer"></div>
-                    <input type="submit" id="send" name="sendQuiz">
+                    <input type="submit" name="sendQuiz">
                 </form>
             </div>
         </div>
@@ -39,6 +39,10 @@ function addQuestion() {
   questionFieldName.type = "text";
   questionFieldName.placeholder = "Введите вопрос";
   questionFieldName.name = `question-${questionNumber}-text`;
+  questionFieldName.addEventListener("input", function () {
+    const questionValue = questionFieldName.value;
+    console.log(`${questionWrapper.id}`, questionValue);
+  });
 
   // Создание select
   const selectQuestion = document.createElement("select");
@@ -116,15 +120,30 @@ function addSingleAnswer(questionWrapper, questionNumber) {
   addAnswerBtn.onclick = function () {
     const answerWrapper = document.createElement("div");
     answerWrapper.className = "answer-wrapper";
+    answerWrapper.id = `answer-${answerCount}`;
 
     const answerInput = document.createElement("input");
     answerInput.type = "text";
     answerInput.placeholder = "Вариант ответа";
     answerInput.name = `question-${questionNumber}-answer-${answerCount}-text`;
+    answerInput.addEventListener("input", function () {
+      const answerValue = answerInput.value;
+      console.log(`${answerWrapper.id}:`, answerValue);
+    });
 
     const correctCheckbox = document.createElement("input");
     correctCheckbox.type = "radio";
     correctCheckbox.name = `question-${questionNumber}-answer`;
+    correctCheckbox.addEventListener("input", function () {
+      const correctAnswer = document.querySelectorAll(
+        `input[name=question-${questionNumber}-answer]`,
+      );
+      for (const f of correctAnswer) {
+        if (f.checked) {
+          console.log(`${answerWrapper.id}`, f.value);
+        }
+      }
+    });
 
     const deleteAnswerBtn = document.createElement("button");
     deleteAnswerBtn.type = "button";
