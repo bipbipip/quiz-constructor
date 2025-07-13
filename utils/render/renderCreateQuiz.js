@@ -1,5 +1,6 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
+import { setItem, getItem, updateItem, removeItem } from "../../storage.js";
 
 export function renderCreateQuiz(app) {
   header(app);
@@ -15,7 +16,7 @@ export function renderCreateQuiz(app) {
                     <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
                     <button type="button" id="addQuestionBtn">Добавить вопрос</button>
                     <div id="questionContainer"></div>
-                    <input type="submit" name="sendQuiz">
+                    <input type="button" id="saveQuizBtn"  value="Создать тест">
                 </form>
             </div>
         </div>
@@ -23,13 +24,12 @@ export function renderCreateQuiz(app) {
   );
 
   setupAddQuestion();
+  setupSaveQuiz();
 }
-
-let currentQuestionNumber = 0;
 
 function addQuestion() {
   const container = document.getElementById("questionContainer");
-  const questionNumber = currentQuestionNumber; // Сохраняем текущий номер вопроса
+  const questionNumber = getRandomString(9); // Сохраняем текущий номер вопроса
 
   const questionWrapper = document.createElement("div");
   questionWrapper.className = "question-wrapper";
@@ -96,8 +96,6 @@ function addQuestion() {
 
   // Добавляем контейнер для ответов по умолчанию (одиночный)
   addSingleAnswer(questionWrapper, questionNumber);
-
-  currentQuestionNumber++;
 }
 
 function setupAddQuestion() {
@@ -115,9 +113,8 @@ function addSingleAnswer(questionWrapper, questionNumber) {
   addAnswerBtn.type = "button";
   addAnswerBtn.textContent = "Добавить вариант ответа";
 
-  let answerCount = 0;
-
   addAnswerBtn.onclick = function () {
+    let answerCount = getRandomString(9);
     const answerWrapper = document.createElement("div");
     answerWrapper.className = "answer-wrapper";
     answerWrapper.id = `answer-${answerCount}`;
@@ -134,6 +131,7 @@ function addSingleAnswer(questionWrapper, questionNumber) {
     const correctCheckbox = document.createElement("input");
     correctCheckbox.type = "radio";
     correctCheckbox.name = `question-${questionNumber}-answer`;
+    correctCheckbox.value = "true";
     correctCheckbox.addEventListener("input", function () {
       const correctAnswer = document.querySelectorAll(
         `input[name=question-${questionNumber}-answer]`,
@@ -157,21 +155,15 @@ function addSingleAnswer(questionWrapper, questionNumber) {
     answerWrapper.appendChild(correctCheckbox);
     answerWrapper.appendChild(deleteAnswerBtn);
     answerContainer.appendChild(answerWrapper);
-
-    answerCount++;
   };
 
   // Добавляем начальный ответ
   addAnswerBtn.click();
-
-  answerContainer.appendChild(addAnswerBtn);
+  answerContainer.prepend(addAnswerBtn);
   questionWrapper.appendChild(answerContainer);
 }
 
-function addMultipleAnswer(questionWrapper, questionNumber) {
-  // Аналогично addSingleAnswer, но можно выбирать несколько правильных ответов
-  // Реализация похожа на addSingleAnswer
-}
+function addMultipleAnswer(questionWrapper, questionNumber) {}
 
 function addDetailedAnswer(questionWrapper, questionNumber) {
   const answerContainer = document.createElement("div");
@@ -180,8 +172,91 @@ function addDetailedAnswer(questionWrapper, questionNumber) {
   const answerInput = document.createElement("textarea");
   answerInput.placeholder = "Поле для развернутого ответа";
   answerInput.name = `question-${questionNumber}-answer`;
-  answerInput.disabled = true;
 
   answerContainer.appendChild(answerInput);
   questionWrapper.appendChild(answerContainer);
+}
+///////////////////
+export function getRandomString(count) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < count; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+export function saveQuiz() {
+  // Получаем основные данные теста
+  const quizName = document.querySelector('input[name="quizName"]').value;
+  const quizDescription = document.querySelector(
+    'input[name="quizDescription"]',
+  ).value;
+
+  // Собираем все вопросы
+  const questions = [];
+  const questionWrappers = document.querySelectorAll(".question-wrapper");
+
+  questionWrappers.forEach((wrapper) => {
+    const questionId = wrapper.id.replace("question-", "");
+    const questionText = wrapper.querySelector('input[type="text"]').value;
+    const questionType = wrapper.querySelector("select").value;
+
+    const question = {
+      id: questionId,
+      text: questionText,
+      type: questionType,
+      answers: [],
+    };
+
+    // Собираем ответы в зависимости от типа вопроса
+    if (questionType === "single" || questionType === "multi") {
+      const answerWrappers = wrapper.querySelectorAll(".answer-wrapper");
+
+      answerWrappers.forEach((answerWrapper) => {
+        const answerId = answerWrapper.id.replace("answer-", "");
+        const answerText =
+          answerWrapper.querySelector('input[type="text"]').value;
+        const isCorrect =
+          questionType === "single"
+            ? answerWrapper.querySelector('input[type="radio"]').checked
+            : answerWrapper.querySelector('input[type="checkbox"]').checked;
+
+        question.answers.push({
+          id: answerId,
+          text: answerText,
+          isCorrect: isCorrect,
+        });
+      });
+    } else if (questionType === "detailed") {
+      question.answers.push({
+        text: "",
+        isCorrect: true,
+      });
+    }
+
+    questions.push(question);
+  });
+
+  const quiz = {
+    id: getRandomString(10),
+    name: quizName,
+    description: quizDescription,
+    questions: questions,
+    createdAt: new Date().toISOString(),
+  };
+
+  // Сохраняем в localStorage
+  setItem(`quiz_${quiz.id}`, quiz);
+
+  alert(`Тест "${quiz.name}" успешно сохранен!`);
+
+  return quiz;
+}
+function setupSaveQuiz() {
+  const saveQuizBtn = document.getElementById("saveQuizBtn");
+  if (saveQuizBtn) {
+    saveQuizBtn.addEventListener("click", saveQuiz);
+  }
 }
