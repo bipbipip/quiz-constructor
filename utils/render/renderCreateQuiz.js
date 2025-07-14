@@ -12,8 +12,8 @@ export function renderCreateQuiz(app) {
             <h1>Создать тест</h1>
             <div class="create-quiz">
                 <form  method="get" class="create-quiz-form">
-                    <input type="text" id="key" name="quizName" placeholder="Название теста">
-                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
+                    <input type="text" id="key" name="quizName" placeholder="Название теста" required>
+                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста" required>
                     <button type="button" id="addQuestionBtn">Добавить вопрос</button>
                     <div id="questionContainer"></div>
                     <input type="button" id="saveQuizBtn"  value="Создать тест">
@@ -39,6 +39,7 @@ function addQuestion() {
   questionFieldName.type = "text";
   questionFieldName.placeholder = "Введите вопрос";
   questionFieldName.name = `question-${questionNumber}-text`;
+  questionFieldName.required = true;
   questionFieldName.addEventListener("input", function () {
     const questionValue = questionFieldName.value;
     console.log(`${questionWrapper.id}`, questionValue);
@@ -78,10 +79,10 @@ function addQuestion() {
     const newValue = this.value;
     switch (newValue) {
       case "single":
-        addSingleAnswer(questionWrapper, questionNumber);
+        addAnswer(questionWrapper, questionNumber, "radio");
         break;
       case "multi":
-        addMultipleAnswer(questionWrapper, questionNumber);
+        addAnswer(questionWrapper, questionNumber, "checkbox");
         break;
       case "detailed":
         addDetailedAnswer(questionWrapper, questionNumber);
@@ -95,7 +96,7 @@ function addQuestion() {
   container.appendChild(questionWrapper);
 
   // Добавляем контейнер для ответов по умолчанию (одиночный)
-  addSingleAnswer(questionWrapper, questionNumber);
+  addAnswer(questionWrapper, questionNumber, "radio");
 }
 
 function setupAddQuestion() {
@@ -105,10 +106,10 @@ function setupAddQuestion() {
   }
 }
 
-function addSingleAnswer(questionWrapper, questionNumber) {
+function addAnswer(questionWrapper, questionNumber, answerType = "radio") {
   const answerContainer = document.createElement("div");
   answerContainer.className = "answer-container";
-
+  console.log(answerType);
   const addAnswerBtn = document.createElement("button");
   addAnswerBtn.type = "button";
   addAnswerBtn.textContent = "Добавить вариант ответа";
@@ -122,6 +123,7 @@ function addSingleAnswer(questionWrapper, questionNumber) {
     const answerInput = document.createElement("input");
     answerInput.type = "text";
     answerInput.placeholder = "Вариант ответа";
+    answerInput.required = true;
     answerInput.name = `question-${questionNumber}-answer-${answerCount}-text`;
     answerInput.addEventListener("input", function () {
       const answerValue = answerInput.value;
@@ -129,7 +131,7 @@ function addSingleAnswer(questionWrapper, questionNumber) {
     });
 
     const correctCheckbox = document.createElement("input");
-    correctCheckbox.type = "radio";
+    correctCheckbox.type = answerType;
     correctCheckbox.name = `question-${questionNumber}-answer`;
     correctCheckbox.value = "true";
     correctCheckbox.addEventListener("input", function () {
@@ -162,8 +164,6 @@ function addSingleAnswer(questionWrapper, questionNumber) {
   answerContainer.prepend(addAnswerBtn);
   questionWrapper.appendChild(answerContainer);
 }
-
-function addMultipleAnswer(questionWrapper, questionNumber) {}
 
 function addDetailedAnswer(questionWrapper, questionNumber) {
   const answerContainer = document.createElement("div");
