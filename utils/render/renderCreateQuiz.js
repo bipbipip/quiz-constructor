@@ -362,7 +362,9 @@ function autoSaveQuiz() {
     lastSave: new Date().toISOString(),
   };
 
-  setItem("auto_save_quiz", quiz);
+
+  setItem("quiz_auto_save", quiz);
+
 }
 
 //Функция восстановления недоделанного квиза
