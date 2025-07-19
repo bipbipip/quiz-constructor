@@ -229,10 +229,11 @@ export function saveQuiz() {
           isCorrect: isCorrect,
         });
       });
-    } else if (questionType === "detailed") {
+    } else if (questionType === "detailed") { //Здесь мзменена логика сохранение детаил вопросов
+      const detailedAnswerText = wrapper.querySelector('textarea').value; // Получаем текст из текстового поля
       question.answers.push({
-        text: "",
-        isCorrect: true,
+        text: detailedAnswerText,
+        isCorrect: true, 
       });
     }
 

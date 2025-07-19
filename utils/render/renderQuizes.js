@@ -92,29 +92,45 @@ export function renderQuizList(app) {
   //Функция проверки ответов
   function checkAnswer() {
     if (currentQuiz.questions[currentQuestion].type === "detailed") {
-      const detailedAnswer = document.getElementById('detailedAnswer').value.trim();//получаем текст ответа из текстового поля и удаляем лишние пробелы
-      userAnswers[currentQuestion] = detailedAnswer;
-      return detailedAnswer.length > 0; // Проверяем, что ответ не пустой
+        const detailedAnswer = document.getElementById('detailedAnswer').value.trim();//получаем текст ответа из текстового поля и удаляем лишние пробелы
+        userAnswers[currentQuestion] = detailedAnswer;
+
+        // Проверяем, что ответ не пустой
+        if (detailedAnswer.length === 0) {
+            alert('Пожалуйста, введите ответ.');
+            return false; // Ответ не засчитывается
+        }
+
+        // Получаем правильный ответ из question.answers
+        const correctAnswer = currentQuiz.questions[currentQuestion].answers[0].text;
+
+        // Сравниваем введённый текст с правильным ответом
+        if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+            score++; // Увеличиваем счет, если ответ правильный
+        }
+
+        return true; // Возвращаем true, если проверка прошла
     } else {
-      const checkboxes = document.querySelectorAll('input[name="answer"]');
-      let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
+        // Логика для других типов вопросов
+        const checkboxes = document.querySelectorAll('input[name="answer"]');
+        let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
 
-      if (selected.length === 0) {
-        alert('Выберите хотя бы один ответ.');
-        return false;
-      }
+        if (selected.length === 0) {
+            alert('Выберите хотя бы один ответ.');
+            return false; // Не выбраны ответы
+        }
 
-      userAnswers[currentQuestion] = selected;
+        userAnswers[currentQuestion] = selected;
 
-      const correctIndexes = currentQuiz.questions[currentQuestion].answers //map, который возвращает индекс, если ответ правильный, и null, если нет, а затем filter удаляет все null значения.
-        .map((a, i) => a.isCorrect ? i : null)
-        .filter(i => i !== null);
+        const correctIndexes = currentQuiz.questions[currentQuestion].answerss //map, который возвращает индекс, если ответ правильный, и null, если нет, а затем filter удаляет все null значения.
+            .map((a, i) => a.isCorrect ? i : null)
+            .filter(i => i !== null);
 
-      const isCorrect = selected.every(s => correctIndexes.includes(s)); //Если ответ правильный, то isCorrect будет true. И тогда добавится 1 очко к счету
-      if (isCorrect) score++;
-      return true;
+        const isCorrect = selected.every(s => correctIndexes.includes(s));; //Если ответ правильный, то isCorrect будет true. И тогда добавится 1 очко к счету
+        if (isCorrect) score++; // Увеличиваем счет, если ответ правильный
+        return true; // Возвращаем true, если проверка прошла
     }
-  }
+}
 
   //Функция отображает результаты викторины и кнопку для возврата к списку тестов.
   function showResult() {
