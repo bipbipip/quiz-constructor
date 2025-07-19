@@ -98,7 +98,7 @@ export function renderQuizList(app) {
         // Проверяем, что ответ не пустой
         if (detailedAnswer.length === 0) {
             alert('Пожалуйста, введите ответ.');
-            return false; // Ответ не засчитывается
+            return false;
         }
 
         // Получаем правильный ответ из question.answers
@@ -109,15 +109,15 @@ export function renderQuizList(app) {
             score++; // Увеличиваем счет, если ответ правильный
         }
 
-        return true; // Возвращаем true, если проверка прошла
+        return true;
     } else {
-        // Логика для других типов вопросов
+        // Логика для других вопросов
         const checkboxes = document.querySelectorAll('input[name="answer"]');
         let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
 
         if (selected.length === 0) {
             alert('Выберите хотя бы один ответ.');
-            return false; // Не выбраны ответы
+            return false;
         }
 
         userAnswers[currentQuestion] = selected;
@@ -128,7 +128,7 @@ export function renderQuizList(app) {
 
         const isCorrect = selected.every(s => correctIndexes.includes(s));; //Если ответ правильный, то isCorrect будет true. И тогда добавится 1 очко к счету
         if (isCorrect) score++; // Увеличиваем счет, если ответ правильный
-        return true; // Возвращаем true, если проверка прошла
+        return true;
     }
 }
 
