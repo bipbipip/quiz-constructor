@@ -230,9 +230,10 @@ export function saveQuiz() {
           isCorrect: isCorrect,
         });
       });
-    } else if (questionType === "detailed") {
+    } else if (questionType === "detailed") { //Здесь мзменена логика сохранение детаил вопросов
+      const detailedAnswerText = wrapper.querySelector('textarea').value; // Получаем текст из текстового поля
       question.answers.push({
-        text: "",
+        text: detailedAnswerText,
         isCorrect: true,
       });
     }
@@ -361,7 +362,9 @@ function autoSaveQuiz() {
     lastSave: new Date().toISOString(),
   };
 
+
   setItem("quiz_auto_save", quiz);
+
 }
 
 //Функция восстановления недоделанного квиза
