@@ -16,7 +16,7 @@ export function renderCreateQuiz(app) {
                     <input type="text" id="description" name="quizDescription" placeholder="Описание теста" required>
                     <button type="button" id="addQuestionBtn">Добавить вопрос</button>
                     <div id="questionContainer"></div>
-                    <input type="button" id="saveQuizBtn"  value="Создать тест">
+                    <button type="button" id="saveQuizBtn">Создать тест</button>
                 </form>
             </div>
         </div>
@@ -25,6 +25,7 @@ export function renderCreateQuiz(app) {
 
   setupAddQuestion();
   setupSaveQuiz();
+  setupAutoSave();
 }
 
 function addQuestion() {
@@ -229,9 +230,10 @@ export function saveQuiz() {
           isCorrect: isCorrect,
         });
       });
-    } else if (questionType === "detailed") {
+    } else if (questionType === "detailed") { //Здесь мзменена логика сохранение детаил вопросов
+      const detailedAnswerText = wrapper.querySelector('textarea').value; // Получаем текст из текстового поля
       question.answers.push({
-        text: "",
+        text: detailedAnswerText,
         isCorrect: true,
       });
     }
@@ -259,4 +261,267 @@ function setupSaveQuiz() {
   if (saveQuizBtn) {
     saveQuizBtn.addEventListener("click", saveQuiz);
   }
+}
+
+let autoSaveTimer;
+function setupAutoSave() {
+  // Автосохранение при изменении формы
+  document.addEventListener("input", function (event) {
+    if (event.target.closest(".create-quiz-form")) {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(autoSaveQuiz, 5000);
+    }
+  });
+
+  // Восстановление при загрузке страницы
+  const savedQuiz = getItem("quiz_auto_save");
+  console.log("Загружены автосохранённые данные:", savedQuiz);
+
+  if (savedQuiz) {
+    // Даём время на рендеринг формы
+    setTimeout(() => {
+      const shouldRestore = confirm(
+        "Найдены несохранённые данные. Восстановить?",
+      );
+      if (shouldRestore) {
+        restoreAutoSaveQuiz(savedQuiz);
+      } else {
+        removeItem("quiz_auto_save");
+      }
+    }, 100); // Небольшая задержка для гарантии готовности DOM
+  }
+}
+
+function autoSaveQuiz() {
+  console.log("Автосохранение...");
+  const quizNameInput = document.querySelector('input[name="quizName"]');
+  const quizDescriptionInput = document.querySelector(
+    'input[name="quizDescription"]',
+  );
+
+  if (!quizNameInput || !quizDescriptionInput) return; // Проверяем, что элементы существуют
+
+  const quizName = quizNameInput.value || "";
+  const quizDescription = quizDescriptionInput.value || "";
+
+  const questions = [];
+  const questionWrappers = document.querySelectorAll(".question-wrapper");
+
+  questionWrappers.forEach((wrapper) => {
+    const questionId = wrapper.id.replace("question-", "");
+    const questionTextInput = wrapper.querySelector(
+      'input[type="text"][placeholder="Введите вопрос"]',
+    );
+    const questionSelect = wrapper.querySelector("select.question-type");
+
+    if (!questionTextInput || !questionSelect) return; // Пропускаем, если нет вопроса или типа
+
+    const questionText = questionTextInput.value || "";
+    const questionType = questionSelect.value || "single";
+
+    const question = {
+      id: questionId,
+      text: questionText,
+      type: questionType,
+      answers: [],
+    };
+
+    if (questionType === "single" || questionType === "multi") {
+      const answerWrappers = wrapper.querySelectorAll(".answer-wrapper");
+      answerWrappers.forEach((answerWrapper) => {
+        const answerTextInput =
+          answerWrapper.querySelector('input[type="text"]');
+        const correctInput = answerWrapper.querySelector(
+          `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`,
+        );
+
+        if (!answerTextInput || !correctInput) return;
+
+        question.answers.push({
+          text: answerTextInput.value || "",
+          isCorrect: correctInput.checked,
+        });
+      });
+    } else if (questionType === "detailed") {
+      const answerTextarea = wrapper.querySelector("textarea");
+      if (answerTextarea) {
+        question.answers.push({
+          text: answerTextarea.value || "",
+          isCorrect: true,
+        });
+      }
+    }
+
+    questions.push(question);
+  });
+
+  const quiz = {
+    name: quizName,
+    description: quizDescription,
+    questions: questions,
+    lastSave: new Date().toISOString(),
+  };
+
+
+  setItem("quiz_auto_save", quiz);
+
+}
+
+//Функция восстановления недоделанного квиза
+function restoreAutoSaveQuiz(savedQuiz) {
+  if (!savedQuiz) return;
+
+  // Восстанавливаем название и описание теста
+  const quizNameInput = document.querySelector('input[name="quizName"]');
+  const quizDescriptionInput = document.querySelector(
+    'input[name="quizDescription"]',
+  );
+
+  if (quizNameInput) quizNameInput.value = savedQuiz.name || "";
+  if (quizDescriptionInput)
+    quizDescriptionInput.value = savedQuiz.description || "";
+
+  // Очищаем контейнер вопросов
+  const questionContainer = document.getElementById("questionContainer");
+  if (!questionContainer) return;
+  questionContainer.innerHTML = "";
+
+  // Восстанавливаем вопросы последовательно
+  restoreQuestionsSequentially(savedQuiz.questions || [], 0);
+}
+function restoreQuestionsSequentially(questions, index) {
+  if (index >= questions.length) return;
+
+  const question = questions[index];
+  const addQuestionBtn = document.getElementById("addQuestionBtn");
+
+  if (!addQuestionBtn) return;
+
+  // Добавляем новый вопрос
+  addQuestionBtn.click();
+
+  // Ждем пока создастся DOM вопроса
+  setTimeout(() => {
+    const questionWrappers = document.querySelectorAll(".question-wrapper");
+    const currentQuestionWrapper =
+      questionWrappers[questionWrappers.length - 1];
+
+    if (!currentQuestionWrapper) {
+      restoreQuestionsSequentially(questions, index + 1);
+      return;
+    }
+
+    // Устанавливаем ID вопроса
+    if (question.id) currentQuestionWrapper.id = `question-${question.id}`;
+
+    // Заполняем текст вопроса
+    const questionInput = currentQuestionWrapper.querySelector(
+      'input[type="text"][placeholder="Введите вопрос"]',
+    );
+    if (questionInput && question.text) questionInput.value = question.text;
+
+    // Устанавливаем тип вопроса
+    const questionSelect = currentQuestionWrapper.querySelector(
+      "select.question-type",
+    );
+    if (questionSelect && question.type) {
+      questionSelect.value = question.type;
+
+      // Имитируем изменение типа с задержкой
+      setTimeout(() => {
+        const event = new Event("change", { bubbles: true });
+        questionSelect.dispatchEvent(event);
+
+        // После изменения типа заполняем ответы
+        setTimeout(() => {
+          restoreAnswers(currentQuestionWrapper, question);
+
+          // Переходим к следующему вопросу
+          restoreQuestionsSequentially(questions, index + 1);
+        }, 100);
+      }, 100);
+    } else {
+      restoreQuestionsSequentially(questions, index + 1);
+    }
+  }, 100);
+}
+
+function restoreAnswers(questionWrapper, question) {
+  if (!question.answers || !question.answers.length) return;
+
+  // Для вопросов с вариантами ответов
+  if (question.type === "single" || question.type === "multi") {
+    // Удаляем стандартный ответ (если есть)
+    const defaultAnswer = questionWrapper.querySelector(".answer-wrapper");
+    if (defaultAnswer) defaultAnswer.remove();
+
+    // Добавляем сохраненные ответы
+    restoreAnswersSequentially(
+      questionWrapper,
+      question.answers,
+      0,
+      question.type,
+    );
+  }
+  // Для развернутого ответа
+  else if (question.type === "detailed") {
+    const answerTextarea = questionWrapper.querySelector("textarea");
+    if (answerTextarea && question.answers[0]?.text) {
+      answerTextarea.value = question.answers[0].text;
+    }
+  }
+}
+
+function restoreAnswersSequentially(
+  questionWrapper,
+  answers,
+  index,
+  questionType,
+) {
+  if (index >= answers.length) return;
+
+  const answer = answers[index];
+  const addAnswerBtn = questionWrapper.querySelector(
+    ".answer-container > button",
+  );
+
+  if (!addAnswerBtn) return;
+
+  // Добавляем новый вариант ответа
+  addAnswerBtn.click();
+
+  // Ждем пока создастся DOM ответа
+  setTimeout(() => {
+    const answerWrappers = questionWrapper.querySelectorAll(".answer-wrapper");
+    const currentAnswerWrapper = answerWrappers[answerWrappers.length - 1];
+
+    if (!currentAnswerWrapper) {
+      restoreAnswersSequentially(
+        questionWrapper,
+        answers,
+        index + 1,
+        questionType,
+      );
+      return;
+    }
+
+    // Заполняем текст ответа
+    const answerInput =
+      currentAnswerWrapper.querySelector('input[type="text"]');
+    if (answerInput && answer.text) answerInput.value = answer.text;
+
+    // Устанавливаем правильный ответ
+    const correctInput = currentAnswerWrapper.querySelector(
+      `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`,
+    );
+    if (correctInput) correctInput.checked = !!answer.isCorrect;
+
+    // Переходим к следующему ответу
+    restoreAnswersSequentially(
+      questionWrapper,
+      answers,
+      index + 1,
+      questionType,
+    );
+  }, 100);
 }
