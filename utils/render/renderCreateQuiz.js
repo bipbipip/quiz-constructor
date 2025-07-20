@@ -274,7 +274,7 @@ function setupAutoSave() {
   });
 
   // Восстановление при загрузке страницы
-  const savedQuiz = getItem("quiz_auto_save");
+  const savedQuiz = getItem("auto_save_quiz");
   console.log("Загружены автосохранённые данные:", savedQuiz);
 
   if (savedQuiz) {
@@ -286,7 +286,7 @@ function setupAutoSave() {
       if (shouldRestore) {
         restoreAutoSaveQuiz(savedQuiz);
       } else {
-        removeItem("quiz_auto_save");
+        removeItem("auto_save_quiz");
       }
     }, 100); // Небольшая задержка для гарантии готовности DOM
   }
@@ -363,7 +363,7 @@ function autoSaveQuiz() {
   };
 
 
-  setItem("quiz_auto_save", quiz);
+  setItem("auto_save_quiz", quiz);
 
 }
 
