@@ -9,36 +9,55 @@ export function renderQuizList(app) {
         <div id="quiz"></div>
         <button class="btn" id="nextBtn" style="display: none;">Ответить</button>
         <button class="btn" id="backBtn" style="display: none;" onclick="goBack()">Назад</button>
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+        </div>
         <div class="result" id="result"></div>
     </div>
   `;
 
   render(app, quizHtml);
 
-  //Извлекает ключи из localStorage, фильтрует их по префиксу quiz_, а затем преобразует в объекты викторин с помощью JSON.parse
+  function addStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .progress-container {
+        width: 20em;
+        background-color: #eee;
+        border-radius: 5px;
+        height: 20px;
+        margin: 10px 0;
+      }
+  
+      .progress-bar {
+        height: 100%;
+        background-color: #f94dff; 
+        border-radius: 5px;
+        transition: width 0.3s;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   const quizzes = Object.keys(localStorage)
     .filter(key => key.startsWith('quiz_'))
     .map(key => JSON.parse(localStorage.getItem(key)));
 
-  // Отображение списка викторин
   const quizSelectionHtml = quizzes.map((quiz, index) => `
     <div>
       <button onclick="startQuiz(${index})">${quiz.name}</button>
     </div>
   `).join('');
 
-  //Находим элемент с ID quiz и добавляет в него HTML-код с кнопками викторин.
   const quizContainer = document.getElementById('quiz');
   quizContainer.innerHTML = quizSelectionHtml;
   quizContainer.style.display = 'block';
 
-  //Переменные состояния
   let currentQuestion = 0;
   let score = 0;
   let userAnswers = [];
   let currentQuiz = null;
 
-  //Функция запускает викторину по индексу. Если викторина не найдена, выводится сообщение об ошибке.
   window.startQuiz = function (index) {
     currentQuiz = quizzes[index];
     if (!currentQuiz) {
@@ -50,17 +69,16 @@ export function renderQuizList(app) {
     score = 0;
     userAnswers = [];
 
-    //Отображение текущего вопроса
     quizContainer.style.display = 'block';
     document.getElementById('nextBtn').style.display = 'block';
     document.getElementById('backBtn').style.display = 'block';
-    
+    document.getElementById('progressContainer').style.display = 'block';
     
     renderQuestion(currentQuiz);
   };
 
-  //Загружаем текущий вопрос и проверяем, существует ли он.
   function renderQuestion(quiz) {
+    addStyles();
     const question = quiz.questions[currentQuestion];
     if (!question) return;
 
@@ -71,7 +89,6 @@ export function renderQuizList(app) {
       <div class="answers">
     `;
     
-    //Обработка типов вопросов
     if (question.type === "detailed") {
       html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ"></textarea>`;
     } else {
@@ -82,59 +99,55 @@ export function renderQuizList(app) {
     }
 
     html += `</div>`;
-
     document.getElementById('quiz').innerHTML = html;
     document.getElementById('result').textContent = '';
+
     document.getElementById('nextBtn').textContent = currentQuestion === quiz.questions.length - 1 ? 'Завершить' : 'Ответить';
   }
 
-
   function checkAnswer() {
     if (currentQuiz.questions[currentQuestion].type === "detailed") {
-        const detailedAnswer = document.getElementById('detailedAnswer').value.trim();
-        userAnswers[currentQuestion] = detailedAnswer;
+      const detailedAnswer = document.getElementById('detailedAnswer').value.trim();
+      userAnswers[currentQuestion] = detailedAnswer;
 
-        // Проверяем, что ответ не пустой
-        if (detailedAnswer.length === 0) {
-            alert('Пожалуйста, введите ответ.');
-            return false; // Ответ не засчитывается
-        }
+      if (detailedAnswer.length === 0) {
+        alert('Пожалуйста, введите ответ.');
+        return false;
+      }
 
-        // Получаем правильный ответ из question.answers
-        const correctAnswer = currentQuiz.questions[currentQuestion].answers[0].text;
+      const correctAnswer = currentQuiz.questions[currentQuestion].answers[0].text;
 
-        // Сравниваем введённый текст с правильным ответом
-        if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-            score++; // Увеличиваем счет, если ответ правильный
-        }
+      if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+        score++;
+      }
 
-        return true; // Возвращаем true, если проверка прошла
+      return true;
     } else {
-        // Логика для других типов вопросов
-        const checkboxes = document.querySelectorAll('input[name="answer"]');
-        let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
+      const checkboxes = document.querySelectorAll('input[name="answer"]');
+      let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
 
-        if (selected.length === 0) {
-            alert('Выберите хотя бы один ответ.');
-            return false; // Не выбраны ответы
-        }
+      if (selected.length === 0) {
+        alert('Выберите хотя бы один ответ.');
+        return false;
+      }
 
-        userAnswers[currentQuestion] = selected;
+      userAnswers[currentQuestion] = selected;
 
-        const correctIndexes = currentQuiz.questions[currentQuestion].answers
-            .map((a, i) => a.isCorrect ? i : null)
-            .filter(i => i !== null);
+      const correctIndexes = currentQuiz.questions[currentQuestion].answers
+        .map((a, i) => a.isCorrect ? i : null)
+        .filter(i => i !== null);
 
-        const isCorrect = selected.every(s => correctIndexes.includes(s));
-        if (isCorrect) score++; // Увеличиваем счет, если ответ правильный
-        return true; // Возвращаем true, если проверка прошла
+      const isCorrect = selected.every(s => correctIndexes.includes(s));
+      if (isCorrect) score++;
+      return true;
     }
-}
-  //Функция отображает результаты викторины и кнопку для возврата к списку тестов.
+  }
+
   function showResult() {
     document.getElementById('quiz').innerHTML = '';
     document.getElementById('nextBtn').style.display = 'none';
     document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('progressContainer').style.display = 'none';
     
     const resultHtml = `
       <h2>Результаты викторины</h2>
@@ -144,10 +157,15 @@ export function renderQuizList(app) {
     document.getElementById('quiz').innerHTML = resultHtml;
   }
 
-  //Кнопка ответить
+  function updateProgressBar(totalQuestions) {
+    const progressBar = document.getElementById('progressBar');
+    const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+  }
+  
   document.getElementById('nextBtn').onclick = function () {
     if (!checkAnswer()) return;
-
+    updateProgressBar(currentQuiz.questions.length);
     currentQuestion++;
     if (currentQuestion < currentQuiz.questions.length) {
       renderQuestion(currentQuiz);
@@ -156,25 +174,30 @@ export function renderQuizList(app) {
     }
   };
 
-  //Кнопка назад
   window.goBack = function () {
     if (currentQuestion > 0) {
-      currentQuestion--; // Уменьшаем индекс текущего вопроса
-      renderQuestion(currentQuiz); // Отображаем предыдущий вопрос
+      currentQuestion--;
+      renderQuestion(currentQuiz);
     } else {
-      // Если мы на первом вопросе, возвращаемся к выбору викторины
-      quizContainer.innerHTML = quizSelectionHtml; // Отображаем список викторин снова
+      quizContainer.innerHTML = quizSelectionHtml;
       quizContainer.style.display = 'block';
       document.getElementById('nextBtn').style.display = 'none';
       document.getElementById('backBtn').style.display = 'none';
+      document.getElementById('progressContainer').style.display = 'none';
     }
   };
 
-  //Функция для возврата к списку викторин
-  window.goToQuizList = function () {
-    quizContainer.innerHTML = quizSelectionHtml; // Возвращаемся к списку викторин
-    quizContainer.style.display = 'block';
-    document.getElementById('nextBtn').style.display = 'none';
-    document.getElementById('backBtn').style.display = 'none';
-  };
+window.goToQuizList = function () {
+  progressBar.style.width = '0%';
+  quizContainer.innerHTML = quizSelectionHtml;
+  quizContainer.style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('backBtn').style.display = 'none';
+  document.getElementById('progressContainer').style.display = 'none';
+};
+
+document.getElementById('solve_test').addEventListener('click', function(event) {
+  event.preventDefault(); 
+  goToQuizList();
+});
 }

@@ -7,7 +7,7 @@ export function header(app) {
          <header class="header">
             <a href="#home">Главная меню</a>
             <a href="#create_test">Создать тест</a>
-            <a href="#solve_test">Список тестов</a>
+            <a href="#solve_test" id="solve_test">Список тестов</a>
         </header>
     `,
   );
