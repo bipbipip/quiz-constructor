@@ -6,7 +6,7 @@ export function renderQuizList(app) {
 
   const quizHtml = `
     <div class="quiz-container">
-        <div id="quiz"></div>
+        <div id="quiz" class="quiz-grid"></div>
         <button class="btn" id="nextBtn" style="display: none;">Ответить</button>
         <button class="btn" id="backBtn" style="display: none;" onclick="goBack()">Назад</button>
         <div class="result" id="result"></div>
@@ -22,15 +22,18 @@ export function renderQuizList(app) {
 
   // Отображение списка викторин
   const quizSelectionHtml = quizzes.map((quiz, index) => `
-    <div>
-      <button onclick="startQuiz(${index})">${quiz.name}</button>
+    <div class="quiz-card-container">
+    <h2 class="quiz-card-name">${quiz.name}</h2>
+    <p class="quiz-card-description">${quiz.description}</p>
+      <button onclick="startQuiz(${index})">Пройти тест</button>
     </div>
   `).join('');
+
 
   //Находим элемент с ID quiz и добавляет в него HTML-код с кнопками викторин.
   const quizContainer = document.getElementById('quiz');
   quizContainer.innerHTML = quizSelectionHtml;
-  quizContainer.style.display = 'block';
+  // quizContainer.style.display = 'block';
 
   //Переменные состояния
   let currentQuestion = 0;
@@ -51,10 +54,10 @@ export function renderQuizList(app) {
     userAnswers = [];
 
     //Отображение текущего вопроса
-    quizContainer.style.display = 'block';
+    // quizContainer.style.display = 'block';
     document.getElementById('nextBtn').style.display = 'block';
     document.getElementById('backBtn').style.display = 'block';
-    
+
     
     renderQuestion(currentQuiz);
   };
@@ -164,7 +167,7 @@ export function renderQuizList(app) {
     } else {
       // Если мы на первом вопросе, возвращаемся к выбору викторины
       quizContainer.innerHTML = quizSelectionHtml; // Отображаем список викторин снова
-      quizContainer.style.display = 'block';
+      // quizContainer.style.display = 'block';
       document.getElementById('nextBtn').style.display = 'none';
       document.getElementById('backBtn').style.display = 'none';
     }
@@ -173,7 +176,7 @@ export function renderQuizList(app) {
   //Функция для возврата к списку викторин
   window.goToQuizList = function () {
     quizContainer.innerHTML = quizSelectionHtml; // Возвращаемся к списку викторин
-    quizContainer.style.display = 'block';
+    // quizContainer.style.display = 'block';
     document.getElementById('nextBtn').style.display = 'none';
     document.getElementById('backBtn').style.display = 'none';
   };
