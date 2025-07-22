@@ -12,8 +12,8 @@ export function renderCreateQuiz(app) {
             <h1>Создать тест</h1>
             <div class="create-quiz">
                 <form  method="get" class="create-quiz-form">
-                    <input type="text" id="key" name="quizName" placeholder="Название теста" required>
-                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста" required>
+                    <input type="text" id="key" name="quizName" placeholder="Название теста">
+                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
                     <button type="button" id="addQuestionBtn">Добавить вопрос</button>
                     <div id="questionContainer"></div>
                     <button type="button" id="saveQuizBtn">Создать тест</button>
@@ -189,6 +189,9 @@ export function getRandomString(count) {
 }
 
 export function saveQuiz() {
+  if (!validateQuiz()) {
+    return null; // Прерываем сохранение если валидация не пройдена
+  }
   // Получаем основные данные теста
   const quizName = document.querySelector('input[name="quizName"]').value;
   const quizDescription = document.querySelector(
@@ -259,7 +262,11 @@ export function saveQuiz() {
 function setupSaveQuiz() {
   const saveQuizBtn = document.getElementById("saveQuizBtn");
   if (saveQuizBtn) {
-    saveQuizBtn.addEventListener("click", saveQuiz);
+    saveQuizBtn.addEventListener("click", ()=> {
+      if (validateQuiz()) {
+        saveQuiz();
+      }
+    });
   }
 }
 
@@ -444,6 +451,7 @@ function restoreQuestionsSequentially(questions, index) {
       restoreQuestionsSequentially(questions, index + 1);
     }
   }, 100);
+
 }
 
 function restoreAnswers(questionWrapper, question) {
@@ -524,4 +532,160 @@ function restoreAnswersSequentially(
       questionType,
     );
   }, 100);
+}
+function validateQuiz() {
+  highlightInvalidFields();
+  // Проверка названия теста
+  const quizName = document.querySelector('input[name="quizName"]').value.trim();
+  if (!quizName) {
+    alert("Пожалуйста, введите название теста");
+    return false;
+  }
+
+  // Проверка описания теста
+  const quizDescription = document.querySelector('input[name="quizDescription"]').value.trim();
+  if (!quizDescription) {
+    alert("Пожалуйста, введите описание теста");
+    return false;
+  }
+
+  // Проверка наличия вопросов
+  const questionWrappers = document.querySelectorAll(".question-wrapper");
+  if (questionWrappers.length === 0) {
+    alert("Добавьте хотя бы один вопрос");
+    return false;
+  }
+
+  // Проверка каждого вопроса
+  for (const wrapper of questionWrappers) {
+    const questionText = wrapper.querySelector('input[type="text"][placeholder="Введите вопрос"]').value.trim();
+    if (!questionText) {
+      alert("Пожалуйста, заполните текст вопроса");
+      return false;
+    }
+
+    const questionType = wrapper.querySelector("select").value;
+    const answerContainer = wrapper.querySelector(".answer-container");
+
+    // Проверка ответов в зависимости от типа вопроса
+    if (questionType === "single" || questionType === "multi") {
+      const answerWrappers = wrapper.querySelectorAll(".answer-wrapper");
+      if (answerWrappers.length <= 1) {
+        alert("Добавьте хотя бы два варианта ответа");
+        return false;
+      }
+
+      let hasCorrectAnswer = false;
+      for (const answerWrapper of answerWrappers) {
+        const answerText = answerWrapper.querySelector('input[type="text"]').value.trim();
+        if (!answerText) {
+          alert("Пожалуйста, заполните текст варианта ответа");
+          return false;
+        }
+
+        const correctInput = answerWrapper.querySelector(
+            `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`
+        );
+        if (correctInput.checked) {
+          hasCorrectAnswer = true;
+        }
+      }
+
+      if (!hasCorrectAnswer) {
+        alert("Укажите хотя бы один правильный ответ");
+        return false;
+      }
+    } else if (questionType === "detailed") {
+      const answerTextarea = wrapper.querySelector("textarea");
+      if (!answerTextarea || answerTextarea.value.trim() === "") {
+        alert("Пожалуйста, добавьте поле для развернутого ответа");
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+function highlightInvalidFields() {
+  // Сброс предыдущей подсветки
+  document.querySelectorAll('.invalid-field').forEach(el => {
+    el.classList.remove('invalid-field');
+  });
+
+  // 1. Проверка основных полей теста
+  const quizNameInput = document.querySelector('input[name="quizName"]');
+  if (!quizNameInput.value.trim()) {
+    quizNameInput.classList.add('invalid-field');
+  }
+
+  const quizDescriptionInput = document.querySelector('input[name="quizDescription"]');
+  if (!quizDescriptionInput.value.trim()) {
+    quizDescriptionInput.classList.add('invalid-field');
+  }
+
+  // 2. Проверка всех вопросов
+  let hasQuestions = false;
+  document.querySelectorAll(".question-wrapper").forEach(wrapper => {
+    hasQuestions = true;
+
+    // Проверка текста вопроса
+    const questionInput = wrapper.querySelector('input[type="text"][placeholder="Введите вопрос"]');
+    if (!questionInput.value.trim()) {
+      questionInput.classList.add('invalid-field');
+    }
+
+    // Получаем тип вопроса
+    const questionTypeSelect = wrapper.querySelector("select.question-type");
+    const questionType = questionTypeSelect.value;
+
+    // 3. Проверка ответов в зависимости от типа вопроса
+    if (questionType === "single" || questionType === "multi") {
+      const answerWrappers = wrapper.querySelectorAll(".answer-wrapper");
+      let hasAnswers = false;
+      let hasCorrectAnswer = false;
+
+      answerWrappers.forEach(answerWrapper => {
+        hasAnswers = true;
+
+        // Проверка текста ответа
+        const answerInput = answerWrapper.querySelector('input[type="text"]');
+        if (!answerInput.value.trim()) {
+          answerInput.classList.add('invalid-field');
+        }
+
+        // Проверка выбранного правильного ответа
+        const correctInput = answerWrapper.querySelector(
+            `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`
+        );
+        if (correctInput.checked) {
+          hasCorrectAnswer = true;
+        }
+      });
+
+      // Подсветка если нет ответов вообще
+      if (!hasAnswers) {
+        const addAnswerBtn = wrapper.querySelector(".answer-container > button");
+        if (addAnswerBtn) addAnswerBtn.classList.add('invalid-field');
+      }
+
+    }
+
+    else if (questionType === "detailed") {
+      const answerTextarea = wrapper.querySelector("textarea");
+      if (!answerTextarea || answerTextarea.value.trim() === "") {
+        if (answerTextarea) {
+          answerTextarea.classList.add('invalid-field');
+        } else {
+          const answerContainer = wrapper.querySelector(".answer-container");
+          if (answerContainer) answerContainer.classList.add('invalid-field');
+        }
+      }
+    }
+  });
+
+
+  if (!hasQuestions) {
+    const addQuestionBtn = document.getElementById("addQuestionBtn");
+    if (addQuestionBtn) addQuestionBtn.classList.add('invalid-field');
+  }
 }
