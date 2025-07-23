@@ -8,15 +8,21 @@ export function renderQuizList(app) {
     <div class="quiz-container">
         <div id="quiz"></div>
         <button class="btn" id="nextBtn" style="display: none;">Ответить</button>
+        <button class="btn" id="forwardBtn" style="display: none;">Вперед</button>
         <button class="btn" id="backBtn" style="display: none;" onclick="goBack()">Назад</button>
         <div class="progress-container" id="progressContainer" style="display: none;">
             <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
         </div>
+        <div class="timer" id="timer" style="display: none;"></div>
         <div class="result" id="result"></div>
     </div>
   `;
 
   render(app, quizHtml);
+
+  let timer;
+  let totalTime; // Общее время на викторину
+  let timeLeft; // Остаток времени
 
   function addStyles() {
     const style = document.createElement('style');
@@ -34,6 +40,12 @@ export function renderQuizList(app) {
         background-color: #f94dff; 
         border-radius: 5px;
         transition: width 0.3s;
+      }
+      .correct {
+        color: green;
+      }
+      .incorrect {
+        color: red;
       }
     `;
     document.head.appendChild(style);
@@ -68,13 +80,18 @@ export function renderQuizList(app) {
     currentQuestion = 0;
     score = 0;
     userAnswers = [];
+    
+    totalTime = currentQuiz.questions.length * 60; // 60 секунд на вопрос
+    timeLeft = totalTime;
 
     quizContainer.style.display = 'block';
     document.getElementById('nextBtn').style.display = 'block';
-    document.getElementById('backBtn').style.display = 'block';
+    document.getElementById('forwardBtn').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
     document.getElementById('progressContainer').style.display = 'block';
-    
+    document.getElementById('timer').style.display = 'block';
     renderQuestion(currentQuiz);
+    startTimer(); // Запускаем таймер
   };
 
   function renderQuestion(quiz) {
@@ -88,7 +105,7 @@ export function renderQuizList(app) {
       <div class="question">${currentQuestion + 1}. ${question.text}</div>
       <div class="answers">
     `;
-    
+
     if (question.type === "detailed") {
       html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ"></textarea>`;
     } else {
@@ -101,11 +118,37 @@ export function renderQuizList(app) {
     html += `</div>`;
     document.getElementById('quiz').innerHTML = html;
     document.getElementById('result').textContent = '';
-
     document.getElementById('nextBtn').textContent = currentQuestion === quiz.questions.length - 1 ? 'Завершить' : 'Ответить';
+
+    updateButtonStates();
+  }
+
+  function updateButtonStates() {
+    document.getElementById('backBtn').style.display = currentQuestion === 0 ? 'none' : 'block';
+    document.getElementById('forwardBtn').style.display = currentQuestion === currentQuiz.questions.length - 1 ? 'none' : 'block';
+  }
+
+  function startTimer() {
+    let timerDisplay = document.getElementById('timer');
+    
+    timerDisplay.textContent = `Осталось времени: ${timeLeft / 60} минут ${timeLeft % 60} секунд`;
+    timer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = `Осталось времени: ${Math.floor(timeLeft / 60)} минут ${timeLeft % 60} секунд`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        timerDisplay.textContent = "Время истекло!";
+        document.getElementById('nextBtn').disabled = true;
+        showResult();
+      }
+    }, 1000);
   }
 
   function checkAnswer() {
+    let isCorrect = false;
+    let isPartiallyCorrect = false;
+
     if (currentQuiz.questions[currentQuestion].type === "detailed") {
       const detailedAnswer = document.getElementById('detailedAnswer').value.trim();
       userAnswers[currentQuestion] = detailedAnswer;
@@ -119,7 +162,21 @@ export function renderQuizList(app) {
 
       if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
         score++;
+        isCorrect = true;
       }
+
+      document.getElementById('result').innerHTML = isCorrect 
+        ? `<span class="correct">Верно!</span>` 
+        : `<span class="incorrect">Неверно!</span>`;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < currentQuiz.questions.length) {
+          renderQuestion(currentQuiz);
+        } else {
+          showResult();
+        }
+      }, 1000);
 
       return true;
     } else {
@@ -137,21 +194,55 @@ export function renderQuizList(app) {
         .map((a, i) => a.isCorrect ? i : null)
         .filter(i => i !== null);
 
-      const isCorrect = selected.every(s => correctIndexes.includes(s));
-      if (isCorrect) score++;
+      
+      const allCorrectSelected = correctIndexes.every(idx => selected.includes(idx));
+      const anyCorrectSelected = selected.some(idx => correctIndexes.includes(idx));
+
+      if (allCorrectSelected) {
+        score++;
+        isCorrect = true;
+      } else if (anyCorrectSelected) {
+        isPartiallyCorrect = true;
+      }
+
+      const correctAnswersText = currentQuiz.questions[currentQuestion].answers
+        .filter((_, idx) => correctIndexes.includes(idx))
+        .map(a => a.text)
+        .join(', ');
+
+      if (isCorrect) {
+        document.getElementById('result').innerHTML = `<span class="correct">Верно!</span>`;
+      } else if (isPartiallyCorrect) {
+        document.getElementById('result').innerHTML = `<span class="incorrect">Частично верно!</span>`;
+      } else {
+        document.getElementById('result').innerHTML = `<span class="incorrect">Неверно!</span>`;
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < currentQuiz.questions.length) {
+          renderQuestion(currentQuiz);
+        } else {
+          showResult();
+        }
+      }, 1000);
+
       return true;
     }
   }
 
   function showResult() {
+    clearInterval(timer);
+    document.getElementById('timer').style.display = 'none';
     document.getElementById('quiz').innerHTML = '';
     document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('forwardBtn').style.display = 'none';
     document.getElementById('backBtn').style.display = 'none';
     document.getElementById('progressContainer').style.display = 'none';
     
     const resultHtml = `
       <h2>Результаты викторины</h2>
-      <p>Красаучек, набрал ${score} балла из ${currentQuiz.questions.length} </p>
+      <p>Красаучек, набрал ${score} балла из ${currentQuiz.questions.length}</p>
       <button onclick="goToQuizList()">К списку тестов</button>
     `;
     document.getElementById('quiz').innerHTML = resultHtml;
@@ -166,11 +257,12 @@ export function renderQuizList(app) {
   document.getElementById('nextBtn').onclick = function () {
     if (!checkAnswer()) return;
     updateProgressBar(currentQuiz.questions.length);
-    currentQuestion++;
-    if (currentQuestion < currentQuiz.questions.length) {
+  };
+
+  document.getElementById('forwardBtn').onclick = function () {
+    if (currentQuestion < currentQuiz.questions.length - 1) {
+      currentQuestion++;
       renderQuestion(currentQuiz);
-    } else {
-      showResult();
     }
   };
 
@@ -183,21 +275,26 @@ export function renderQuizList(app) {
       quizContainer.style.display = 'block';
       document.getElementById('nextBtn').style.display = 'none';
       document.getElementById('backBtn').style.display = 'none';
+      document.getElementById('forwardBtn').style.display = 'none';
       document.getElementById('progressContainer').style.display = 'none';
     }
   };
 
-window.goToQuizList = function () {
-  progressBar.style.width = '0%';
-  quizContainer.innerHTML = quizSelectionHtml;
-  quizContainer.style.display = 'block';
-  document.getElementById('nextBtn').style.display = 'none';
-  document.getElementById('backBtn').style.display = 'none';
-  document.getElementById('progressContainer').style.display = 'none';
-};
+  window.goToQuizList = function () {
+    progressBar.style.width = '0%';
+    quizContainer.innerHTML = quizSelectionHtml;
+    quizContainer.style.display = 'block';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('forwardBtn').style.display = 'none';
+    document.getElementById('progressContainer').style.display = 'none';
+  };
 
-document.getElementById('solve_test').addEventListener('click', function(event) {
-  event.preventDefault(); 
-  goToQuizList();
-});
+  document.getElementById('solve_test').addEventListener('click', function(event) {
+    event.preventDefault(); 
+    goToQuizList();
+
+    clearInterval(timer);
+    document.getElementById('timer').style.display = 'none';
+  });
 }
