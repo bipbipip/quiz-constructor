@@ -33,6 +33,7 @@ export function renderQuizList(app) {
   let observer = null;
 
   const quizContainer = document.getElementById("quiz");
+  const loader = document.getElementById("loader");
 
   // Создаем observer один раз
   function createObserver() {
@@ -59,31 +60,36 @@ export function renderQuizList(app) {
 
   // Функция для загрузки дополнительных квизов
   function loadMoreQuizzes() {
-    if (isLoading || currentIndex >= quizzes.length) return;
+    if (isLoading || currentIndex >= quizzes.length) {
+      return;
+    }
 
     isLoading = true;
+    loader.style.display = "block";
+    setTimeout(() => {
+      const endIndex = Math.min(currentIndex + loadMoreCount, quizzes.length);
+      const quizzesToShow = quizzes.slice(currentIndex, endIndex);
 
-    const endIndex = Math.min(currentIndex + loadMoreCount, quizzes.length);
-    const quizzesToShow = quizzes.slice(currentIndex, endIndex);
-
-    const quizSelectionHtml = quizzesToShow
-      .map(
-        (quiz, index) => `
+      const quizSelectionHtml = quizzesToShow
+        .map(
+          (quiz, index) => `
       <div class="quiz-card-container">
         <h2 class="quiz-card-name">${quiz.name}</h2>
         <p class="quiz-card-description">${quiz.description}</p>
+        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
         <button onclick="startQuiz(${currentIndex + index})">Пройти тест</button>
       </div>
     `,
-      )
-      .join("");
+        )
+        .join("");
 
-    quizContainer.insertAdjacentHTML("beforeend", quizSelectionHtml);
-    currentIndex = endIndex;
-    isLoading = false;
-
-    // Обновляем observer для нового последнего элемента
-    createObserver();
+      quizContainer.insertAdjacentHTML("beforeend", quizSelectionHtml);
+      currentIndex = endIndex;
+      isLoading = false;
+      loader.style.display = "none";
+      // Обновляем observer для нового последнего элемента
+      createObserver();
+    }, 2000);
   }
 
   // Начальная загрузка
@@ -97,6 +103,7 @@ export function renderQuizList(app) {
       <div class="quiz-card-container">
         <h2 class="quiz-card-name">${quiz.name}</h2>
         <p class="quiz-card-description">${quiz.description}</p>
+        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
         <button onclick="startQuiz(${index})">Пройти тест</button>
       </div>
     `,
@@ -117,6 +124,9 @@ export function renderQuizList(app) {
   let userAnswers = [];
   let currentQuiz = null;
 
+  window.setupEditQuiz = function (idQuiz) {
+    window.location = `#edit_test/${idQuiz}/`;
+  };
   window.startQuiz = function (index) {
     currentQuiz = quizzes[index];
     if (!currentQuiz) {

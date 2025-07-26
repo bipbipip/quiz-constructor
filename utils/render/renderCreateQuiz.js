@@ -28,7 +28,7 @@ export function renderCreateQuiz(app) {
   setupAutoSave();
 }
 
-function addQuestion() {
+export function addQuestion() {
   const container = document.getElementById("questionContainer");
   const questionNumber = getRandomString(9); // Сохраняем текущий номер вопроса
 
@@ -100,14 +100,18 @@ function addQuestion() {
   addAnswer(questionWrapper, questionNumber, "radio");
 }
 
-function setupAddQuestion() {
+export function setupAddQuestion() {
   const addQuestionBtn = document.getElementById("addQuestionBtn");
   if (addQuestionBtn) {
     addQuestionBtn.addEventListener("click", addQuestion);
   }
 }
 
-function addAnswer(questionWrapper, questionNumber, answerType = "radio") {
+export function addAnswer(
+  questionWrapper,
+  questionNumber,
+  answerType = "radio",
+) {
   const answerContainer = document.createElement("div");
   answerContainer.className = "answer-container";
   console.log(answerType);
@@ -166,7 +170,7 @@ function addAnswer(questionWrapper, questionNumber, answerType = "radio") {
   questionWrapper.appendChild(answerContainer);
 }
 
-function addDetailedAnswer(questionWrapper, questionNumber) {
+export function addDetailedAnswer(questionWrapper, questionNumber) {
   const answerContainer = document.createElement("div");
   answerContainer.className = "answer-container";
 
@@ -233,8 +237,9 @@ export function saveQuiz() {
           isCorrect: isCorrect,
         });
       });
-    } else if (questionType === "detailed") { //Здесь мзменена логика сохранение детаил вопросов
-      const detailedAnswerText = wrapper.querySelector('textarea').value; // Получаем текст из текстового поля
+    } else if (questionType === "detailed") {
+      //Здесь мзменена логика сохранение детаил вопросов
+      const detailedAnswerText = wrapper.querySelector("textarea").value; // Получаем текст из текстового поля
       question.answers.push({
         text: detailedAnswerText,
         isCorrect: true,
@@ -259,10 +264,10 @@ export function saveQuiz() {
 
   return quiz;
 }
-function setupSaveQuiz() {
+export function setupSaveQuiz() {
   const saveQuizBtn = document.getElementById("saveQuizBtn");
   if (saveQuizBtn) {
-    saveQuizBtn.addEventListener("click", ()=> {
+    saveQuizBtn.addEventListener("click", () => {
       if (validateQuiz()) {
         saveQuiz();
       }
@@ -271,7 +276,7 @@ function setupSaveQuiz() {
 }
 
 let autoSaveTimer;
-function setupAutoSave() {
+export function setupAutoSave() {
   // Автосохранение при изменении формы
   document.addEventListener("input", function (event) {
     if (event.target.closest(".create-quiz-form")) {
@@ -369,9 +374,7 @@ function autoSaveQuiz() {
     lastSave: new Date().toISOString(),
   };
 
-
   setItem("auto_save_quiz", quiz);
-
 }
 
 //Функция восстановления недоделанного квиза
@@ -451,7 +454,6 @@ function restoreQuestionsSequentially(questions, index) {
       restoreQuestionsSequentially(questions, index + 1);
     }
   }, 100);
-
 }
 
 function restoreAnswers(questionWrapper, question) {
@@ -533,17 +535,21 @@ function restoreAnswersSequentially(
     );
   }, 100);
 }
-function validateQuiz() {
+export function validateQuiz() {
   highlightInvalidFields();
   // Проверка названия теста
-  const quizName = document.querySelector('input[name="quizName"]').value.trim();
+  const quizName = document
+    .querySelector('input[name="quizName"]')
+    .value.trim();
   if (!quizName) {
     alert("Пожалуйста, введите название теста");
     return false;
   }
 
   // Проверка описания теста
-  const quizDescription = document.querySelector('input[name="quizDescription"]').value.trim();
+  const quizDescription = document
+    .querySelector('input[name="quizDescription"]')
+    .value.trim();
   if (!quizDescription) {
     alert("Пожалуйста, введите описание теста");
     return false;
@@ -558,7 +564,9 @@ function validateQuiz() {
 
   // Проверка каждого вопроса
   for (const wrapper of questionWrappers) {
-    const questionText = wrapper.querySelector('input[type="text"][placeholder="Введите вопрос"]').value.trim();
+    const questionText = wrapper
+      .querySelector('input[type="text"][placeholder="Введите вопрос"]')
+      .value.trim();
     if (!questionText) {
       alert("Пожалуйста, заполните текст вопроса");
       return false;
@@ -577,14 +585,16 @@ function validateQuiz() {
 
       let hasCorrectAnswer = false;
       for (const answerWrapper of answerWrappers) {
-        const answerText = answerWrapper.querySelector('input[type="text"]').value.trim();
+        const answerText = answerWrapper
+          .querySelector('input[type="text"]')
+          .value.trim();
         if (!answerText) {
           alert("Пожалуйста, заполните текст варианта ответа");
           return false;
         }
 
         const correctInput = answerWrapper.querySelector(
-            `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`
+          `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`,
         );
         if (correctInput.checked) {
           hasCorrectAnswer = true;
@@ -608,30 +618,34 @@ function validateQuiz() {
 }
 function highlightInvalidFields() {
   // Сброс предыдущей подсветки
-  document.querySelectorAll('.invalid-field').forEach(el => {
-    el.classList.remove('invalid-field');
+  document.querySelectorAll(".invalid-field").forEach((el) => {
+    el.classList.remove("invalid-field");
   });
 
   // 1. Проверка основных полей теста
   const quizNameInput = document.querySelector('input[name="quizName"]');
   if (!quizNameInput.value.trim()) {
-    quizNameInput.classList.add('invalid-field');
+    quizNameInput.classList.add("invalid-field");
   }
 
-  const quizDescriptionInput = document.querySelector('input[name="quizDescription"]');
+  const quizDescriptionInput = document.querySelector(
+    'input[name="quizDescription"]',
+  );
   if (!quizDescriptionInput.value.trim()) {
-    quizDescriptionInput.classList.add('invalid-field');
+    quizDescriptionInput.classList.add("invalid-field");
   }
 
   // 2. Проверка всех вопросов
   let hasQuestions = false;
-  document.querySelectorAll(".question-wrapper").forEach(wrapper => {
+  document.querySelectorAll(".question-wrapper").forEach((wrapper) => {
     hasQuestions = true;
 
     // Проверка текста вопроса
-    const questionInput = wrapper.querySelector('input[type="text"][placeholder="Введите вопрос"]');
+    const questionInput = wrapper.querySelector(
+      'input[type="text"][placeholder="Введите вопрос"]',
+    );
     if (!questionInput.value.trim()) {
-      questionInput.classList.add('invalid-field');
+      questionInput.classList.add("invalid-field");
     }
 
     // Получаем тип вопроса
@@ -644,18 +658,18 @@ function highlightInvalidFields() {
       let hasAnswers = false;
       let hasCorrectAnswer = false;
 
-      answerWrappers.forEach(answerWrapper => {
+      answerWrappers.forEach((answerWrapper) => {
         hasAnswers = true;
 
         // Проверка текста ответа
         const answerInput = answerWrapper.querySelector('input[type="text"]');
         if (!answerInput.value.trim()) {
-          answerInput.classList.add('invalid-field');
+          answerInput.classList.add("invalid-field");
         }
 
         // Проверка выбранного правильного ответа
         const correctInput = answerWrapper.querySelector(
-            `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`
+          `input[type="${questionType === "single" ? "radio" : "checkbox"}"]`,
         );
         if (correctInput.checked) {
           hasCorrectAnswer = true;
@@ -664,28 +678,26 @@ function highlightInvalidFields() {
 
       // Подсветка если нет ответов вообще
       if (!hasAnswers) {
-        const addAnswerBtn = wrapper.querySelector(".answer-container > button");
-        if (addAnswerBtn) addAnswerBtn.classList.add('invalid-field');
+        const addAnswerBtn = wrapper.querySelector(
+          ".answer-container > button",
+        );
+        if (addAnswerBtn) addAnswerBtn.classList.add("invalid-field");
       }
-
-    }
-
-    else if (questionType === "detailed") {
+    } else if (questionType === "detailed") {
       const answerTextarea = wrapper.querySelector("textarea");
       if (!answerTextarea || answerTextarea.value.trim() === "") {
         if (answerTextarea) {
-          answerTextarea.classList.add('invalid-field');
+          answerTextarea.classList.add("invalid-field");
         } else {
           const answerContainer = wrapper.querySelector(".answer-container");
-          if (answerContainer) answerContainer.classList.add('invalid-field');
+          if (answerContainer) answerContainer.classList.add("invalid-field");
         }
       }
     }
   });
 
-
   if (!hasQuestions) {
     const addQuestionBtn = document.getElementById("addQuestionBtn");
-    if (addQuestionBtn) addQuestionBtn.classList.add('invalid-field');
+    if (addQuestionBtn) addQuestionBtn.classList.add("invalid-field");
   }
 }
