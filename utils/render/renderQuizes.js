@@ -76,6 +76,7 @@ export function renderQuizList(app) {
       <div class="quiz-card-container">
         <h2 class="quiz-card-name">${quiz.name}</h2>
         <p class="quiz-card-description">${quiz.description}</p>
+        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
         <button onclick="startQuiz(${currentIndex + index})">Пройти тест</button>
       </div>
     `,
@@ -102,6 +103,7 @@ export function renderQuizList(app) {
       <div class="quiz-card-container">
         <h2 class="quiz-card-name">${quiz.name}</h2>
         <p class="quiz-card-description">${quiz.description}</p>
+        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
         <button onclick="startQuiz(${index})">Пройти тест</button>
       </div>
     `,
@@ -122,6 +124,9 @@ export function renderQuizList(app) {
   let userAnswers = [];
   let currentQuiz = null;
 
+  window.setupEditQuiz = function (idQuiz) {
+    window.location = `#edit_test/${idQuiz}/`;
+  };
   window.startQuiz = function (index) {
     currentQuiz = quizzes[index];
     if (!currentQuiz) {

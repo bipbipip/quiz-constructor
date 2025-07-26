@@ -9,7 +9,8 @@
 import { getItem, setItem, updateItem, removeItem } from "./storage.js";
 
 window.addEventListener("hashchange", (e) => {
-  const pageName = location.hash.replace("#", "");
+  const pageHash = location.hash.replace("#", "");
+  const pageName = pageHash.split("/")[0];
   processPage(pageName);
 });
 const application = document.getElementById("app");
@@ -38,6 +39,14 @@ const pages = {
     appComponent: () =>
       import("./utils/render/renderQuizes.js").then(
         (module) => module.renderQuizList,
+      ),
+  },
+  edit_test: {
+    title: "Редактирование теста",
+    description: "Здесь вы можете редактировать свой тест",
+    appComponent: () =>
+      import("./utils/render/renderEditQuiz.js").then(
+        (module) => module.renderEditQuiz,
       ),
   },
 };
