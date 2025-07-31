@@ -262,8 +262,29 @@ export function saveQuiz() {
 
   alert(`Тест "${quiz.name}" успешно сохранен!`);
 
+  createPreviewButton(quiz.id);
+
   return quiz;
 }
+
+function createPreviewButton(quizId) {
+  const buttonContainer = document.createElement("div");
+  buttonContainer.className = "preview-button-container";
+
+  const previewButton = document.createElement("button");
+  previewButton.textContent = "Предпросмотр теста";
+  previewButton.onclick = function () {
+    window.setupPreviewQuiz(quizId);
+  };
+
+  buttonContainer.appendChild(previewButton);
+  document.querySelector(".create-quiz").appendChild(buttonContainer);
+}
+
+window.setupPreviewQuiz = function (idQuiz) {
+  window.location = `#preview_test/${idQuiz}/`;
+};
+
 export function setupSaveQuiz() {
   const saveQuizBtn = document.getElementById("saveQuizBtn");
   if (saveQuizBtn) {

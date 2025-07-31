@@ -49,6 +49,14 @@ const pages = {
         (module) => module.renderEditQuiz,
       ),
   },
+  preview_test: {
+    title: "Предпросмотр теста",
+    description: "Здесь вы можете посмотреть, как будет выглядеть ваш тест",
+    appComponent: () =>
+      import("./utils/render/renderPreviewQuiz.js").then(
+        (module) => module.renderPreviewQuiz,
+      ),
+  },
 };
 
 export async function processPage(pageName) {
