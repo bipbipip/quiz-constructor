@@ -133,34 +133,35 @@ export function renderQuizList(app) {
             alert('Вы уже ответили на этот вопрос.');
             return false;
         }
-
+    
         document.getElementById('result').classList.remove('hidden');
-
+    
         let isCorrect = false;
         let isPartiallyCorrect = false;
-
+    
         if (currentQuiz.questions[currentQuestion].type === "detailed") {
+            // Логика для детализированного ответа остается без изменений
             const detailedAnswer = document.getElementById('detailedAnswer').value.trim();
             userAnswers[currentQuestion] = detailedAnswer;
-
+    
             if (detailedAnswer.length === 0) {
                 alert('Пожалуйста, введите ответ.');
                 return false;
             }
-
+    
             const correctAnswer = currentQuiz.questions[currentQuestion].answers[0].text;
-
+    
             if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 score++;
                 isCorrect = true;
             }
-
+    
             document.getElementById('result').innerHTML = isCorrect 
                 ? `<span class="correct">Верно!</span>` 
                 : `<span class="incorrect">Неверно!</span>`;
-
+    
             answeredQuestions[currentQuestion] = true;
-
+    
             setTimeout(() => {
                 currentQuestion++;
                 if (currentQuestion < currentQuiz.questions.length) {
@@ -169,33 +170,33 @@ export function renderQuizList(app) {
                     showResult();
                 }
             }, 1000);
-
+    
             return true;
         } else {
             const checkboxes = document.querySelectorAll('input[name="answer"]');
             let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
-
+    
             if (selected.length === 0) {
                 alert('Выберите хотя бы один ответ.');
                 return false;
             }
-
+    
             userAnswers[currentQuestion] = selected;
-
+    
             const correctIndexes = currentQuiz.questions[currentQuestion].answers
                 .map((a, i) => a.isCorrect ? i : null)
                 .filter(i => i !== null);
-
+    
             const allCorrectSelected = correctIndexes.every(idx => selected.includes(idx));
             const anyCorrectSelected = selected.some(idx => correctIndexes.includes(idx));
-
-            if (allCorrectSelected) {
+    
+            if (allCorrectSelected && selected.length === correctIndexes.length) {
                 score++;
                 isCorrect = true;
             } else if (anyCorrectSelected) {
                 isPartiallyCorrect = true;
             }
-
+    
             if (isCorrect) {
                 document.getElementById('result').innerHTML = `<span class="correct">Верно!</span>`;
             } else if (isPartiallyCorrect) {
@@ -203,9 +204,9 @@ export function renderQuizList(app) {
             } else {
                 document.getElementById('result').innerHTML = `<span class="incorrect">Неверно!</span>`;
             }
-
+    
             answeredQuestions[currentQuestion] = true;
-
+    
             setTimeout(() => {
                 currentQuestion++;
                 if (currentQuestion < currentQuiz.questions.length) {
@@ -214,7 +215,7 @@ export function renderQuizList(app) {
                     showResult();
                 }
             }, 1000);
-
+    
             return true;
         }
     }
