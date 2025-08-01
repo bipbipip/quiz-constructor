@@ -261,7 +261,7 @@ export function saveQuiz() {
   setItem(`quiz_${quiz.id}`, quiz);
 
   alert(`Тест "${quiz.name}" успешно сохранен!`);
-
+  window.location.href = `#solve_test`;
   return quiz;
 }
 export function setupSaveQuiz() {
