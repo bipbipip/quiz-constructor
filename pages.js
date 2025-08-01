@@ -10,8 +10,8 @@ import { getItem, setItem, updateItem, removeItem } from "./storage.js";
 
 window.addEventListener("hashchange", (e) => {
   const pageHash = location.hash.replace("#", "");
-  const pageName = pageHash.split("/")[0];
-  processPage(pageName);
+
+  processPage(pageHash);
 });
 const application = document.getElementById("app");
 
@@ -59,11 +59,13 @@ const pages = {
   },
 };
 
-export async function processPage(pageName) {
+export async function processPage(pageHash) {
   application.innerHTML = "";
 
+  const pageName = pageHash.split("/")[0];
   const page = pages[pageName] ?? pages.home;
   const renderFunction = await page.appComponent();
+  console.log(pageName);
 
   renderFunction(application);
 }
