@@ -42,7 +42,7 @@ function setupEditQuiz() {
 
   if (!quiz) {
     alert("Тест не найден!");
-    window.location.href = "/";
+    window.location.href = `#solve_test`;
     return;
   }
 
