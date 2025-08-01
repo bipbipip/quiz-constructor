@@ -262,7 +262,9 @@ export function saveQuiz() {
 
   alert(`Тест "${quiz.name}" успешно сохранен!`);
 
+  
   createPreviewButton(quiz.id);
+
 
   return quiz;
 }
