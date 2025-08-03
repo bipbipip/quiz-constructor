@@ -262,14 +262,14 @@ export function saveQuiz() {
 
   alert(`Тест "${quiz.name}" успешно сохранен!`);
 
-   setupPreviewQuiz(quiz.id);
+  setupPreviewQuiz(quiz.id);
 
   return quiz;
 }
 
-     window.setupPreviewQuiz = function (idQuiz) {
-      window.location = `#preview_test/${idQuiz}/`;
-  };
+window.setupPreviewQuiz = function (idQuiz) {
+  window.location = `#preview_test/${idQuiz}/`;
+};
 
 export function setupSaveQuiz() {
   const saveQuizBtn = document.getElementById("saveQuizBtn");

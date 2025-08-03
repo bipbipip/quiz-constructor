@@ -4,18 +4,17 @@ import { getItem } from "../../storage.js";
 
 // Функция для добавления стилей на страницу
 function addStyles() {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '../style.css';
-    document.head.appendChild(link);
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "../style.css";
+  document.head.appendChild(link);
 }
 
-
 export function renderPassQuiz(app) {
-    addStyles();
-    header(app);
+  addStyles();
+  header(app);
 
-    const quizHtml = `
+  const quizHtml = `
         <div class="quiz-container">
             <div id="quiz"></div>
             <button class="btn hidden" id="nextBtn">Ответить</button>
@@ -29,248 +28,268 @@ export function renderPassQuiz(app) {
         </div>
     `;
 
-    render(app, quizHtml);
+  render(app, quizHtml);
 
-    let timer;
-    let totalTime; // Общее время на викторину
-    let timeLeft; // Остаток времени
-    let currentQuestion; // Объявляем текущий вопрос
-    let score = 0; // Объявляем счет
-    let userAnswers = []; // Объявляем массив ответов пользователя
-    let currentQuiz; // Текущий тест
+  let timer;
+  let totalTime; // Общее время на викторину
+  let timeLeft; // Остаток времени
+  let currentQuestion; // Объявляем текущий вопрос
+  let score = 0; // Объявляем счет
+  let userAnswers = []; // Объявляем массив ответов пользователя
+  let currentQuiz; // Текущий тест
 
-    // Получаем quizId из URL
-    const currentUrl = window.location.href;
-    const parts = currentUrl.split("/");
-    const quizId = parts[4] ? parts[4] : "";
+  // Получаем quizId из URL
+  const currentUrl = window.location.href;
+  const parts = currentUrl.split("/");
+  const quizId = parts[5] ? parts[5] : "";
 
-    // Получаем тест по quizId
-    const quiz = getItem(`quiz_${quizId}`);
-    
-    if (!quiz) {
-        alert("Тест не найден!");
-        window.location.href = "/";
-        return;
-    }
+  // Получаем тест по quizId
+  const quiz = getItem(`quiz_${quizId}`);
 
-    totalTime = quiz.questions.length * 60; // 60 секунд на вопрос
-    timeLeft = totalTime;
+  if (!quiz) {
+    alert("Тест не найден!");
+    window.location.href = "/";
+    return;
+  }
 
-    // Старт теста
-    startQuiz(quiz);
+  totalTime = quiz.questions.length * 60; // 60 секунд на вопрос
+  timeLeft = totalTime;
 
-    function startQuiz(quiz) {
-        currentQuiz = quiz;
-        currentQuestion = 0;
-        score = 0;
-        userAnswers = [];
-        
-        document.getElementById('nextBtn').classList.remove('hidden');
-        document.getElementById('forwardBtn').classList.add('hidden');
-        document.getElementById('backBtn').classList.add('hidden');
-        document.getElementById('progressContainer').classList.add('visible');
-        document.getElementById('timer').classList.add('visible');
-        renderQuestion(currentQuiz);
-        startTimer(); // Запускаем таймер
-    }
+  // Старт теста
+  startQuiz(quiz);
 
-    function renderQuestion(quiz) {
-        const question = quiz.questions[currentQuestion];
-        if (!question) return;
+  function startQuiz(quiz) {
+    currentQuiz = quiz;
+    currentQuestion = 0;
+    score = 0;
+    userAnswers = [];
 
-        let html = `
+    document.getElementById("nextBtn").classList.remove("hidden");
+    document.getElementById("forwardBtn").classList.add("hidden");
+    document.getElementById("backBtn").classList.add("hidden");
+    document.getElementById("progressContainer").classList.add("visible");
+    document.getElementById("timer").classList.add("visible");
+    renderQuestion(currentQuiz);
+    startTimer(); // Запускаем таймер
+  }
+
+  function renderQuestion(quiz) {
+    const question = quiz.questions[currentQuestion];
+    if (!question) return;
+
+    let html = `
             <h2>${quiz.name}</h2>
             <p>${quiz.description}</p>
             <div class="question">${currentQuestion + 1}. ${question.text}</div>
             <div class="answers">
         `;
 
-        if (question.type === "detailed") {
-            html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ"></textarea>`;
-        } else {
-            question.answers.forEach((answer, idx) => {
-                const inputType = question.type === 'multi' ? 'checkbox' : 'radio';
-                html += `<label><input type="${inputType}" name="answer" value="${idx}"> ${answer.text}</label><br>`;
-            });
-        }
-
-        html += `</div>`;
-        document.getElementById('quiz').innerHTML = html;
-        document.getElementById('result').textContent = '';
-        document.getElementById('nextBtn').textContent = currentQuestion === quiz.questions.length - 1 ? 'Завершить' : 'Ответить';
-
-        updateButtonStates();
+    if (question.type === "detailed") {
+      html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ"></textarea>`;
+    } else {
+      question.answers.forEach((answer, idx) => {
+        const inputType = question.type === "multi" ? "checkbox" : "radio";
+        html += `<label><input type="${inputType}" class="checkbox-button" name="answer" value="${idx}"> ${answer.text}</label><br>`;
+      });
     }
 
-    function updateButtonStates() {
-        document.getElementById('backBtn').classList.toggle('hidden', currentQuestion === 0);
-        document.getElementById('forwardBtn').classList.toggle('hidden', currentQuestion === currentQuiz.questions.length - 1);
-    }
+    html += `</div>`;
+    document.getElementById("quiz").innerHTML = html;
+    document.getElementById("result").textContent = "";
+    document.getElementById("nextBtn").textContent =
+      currentQuestion === quiz.questions.length - 1 ? "Завершить" : "Ответить";
 
-    function startTimer() {
-        let timerDisplay = document.getElementById('timer');
-        
-        timerDisplay.textContent = `Осталось времени: ${timeLeft / 60} минут ${timeLeft % 60} секунд`;
-        timer = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = `Осталось времени: ${Math.floor(timeLeft / 60)} минут ${timeLeft % 60} секунд`;
+    updateButtonStates();
+  }
 
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                timerDisplay.textContent = "Время истекло!";
-                document.getElementById('nextBtn').disabled = true;
-                alert('Время вышло!');
-                showResult();
-            }
-        }, 1000);
-    }
+  function updateButtonStates() {
+    document
+      .getElementById("backBtn")
+      .classList.toggle("hidden", currentQuestion === 0);
+    document
+      .getElementById("forwardBtn")
+      .classList.toggle(
+        "hidden",
+        currentQuestion === currentQuiz.questions.length - 1,
+      );
+  }
 
-    let answeredQuestions = []; // Массив для отслеживания отвеченных вопросов
+  function startTimer() {
+    let timerDisplay = document.getElementById("timer");
 
-    function checkAnswer() {
-        if (answeredQuestions[currentQuestion]) {
-            alert('Вы уже ответили на этот вопрос.');
-            return false;
-        }
-    
-        document.getElementById('result').classList.remove('hidden');
-    
-        let isCorrect = false;
-        let isPartiallyCorrect = false;
-    
-        if (currentQuiz.questions[currentQuestion].type === "detailed") {
-            const detailedAnswer = document.getElementById('detailedAnswer').value.trim();
-            userAnswers[currentQuestion] = detailedAnswer;
-    
-            if (detailedAnswer.length === 0) {
-                alert('Пожалуйста, введите ответ.');
-                return false;
-            }
-    
-            const correctAnswer = currentQuiz.questions[currentQuestion].answers[0].text;
-    
-            if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                score++;
-                isCorrect = true;
-            }
-    
-            document.getElementById('result').innerHTML = isCorrect 
-                ? `<span class="correct">Верно!</span>` 
-                : `<span class="incorrect">Неверно!</span>`;
-    
-            answeredQuestions[currentQuestion] = true;
-    
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < currentQuiz.questions.length) {
-                    renderQuestion(currentQuiz);
-                } else {
-                    showResult();
-                }
-            }, 1000);
-    
-            return true;
-        } else {
-            const checkboxes = document.querySelectorAll('input[name="answer"]');
-            let selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => Number(cb.value));
-    
-            if (selected.length === 0) {
-                alert('Выберите хотя бы один ответ.');
-                return false;
-            }
-    
-            userAnswers[currentQuestion] = selected;
-    
-            const correctIndexes = currentQuiz.questions[currentQuestion].answers
-                .map((a, i) => a.isCorrect ? i : null)
-                .filter(i => i !== null);
-    
-            const allCorrectSelected = correctIndexes.every(idx => selected.includes(idx));
-            const anyCorrectSelected = selected.some(idx => correctIndexes.includes(idx));
-    
-            if (allCorrectSelected && selected.length === correctIndexes.length) {
-                score++;
-                isCorrect = true;
-            } else if (anyCorrectSelected) {
-                isPartiallyCorrect = true;
-            }
-    
-            if (isCorrect) {
-                document.getElementById('result').innerHTML = `<span class="correct">Верно!</span>`;
-            } else if (isPartiallyCorrect) {
-                document.getElementById('result').innerHTML = `<span class="incorrect">Частично верно!</span>`;
-            } else {
-                document.getElementById('result').innerHTML = `<span class="incorrect">Неверно!</span>`;
-            }
-    
-            answeredQuestions[currentQuestion] = true;
-    
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < currentQuiz.questions.length) {
-                    renderQuestion(currentQuiz);
-                } else {
-                    showResult();
-                }
-            }, 1000);
-    
-            return true;
-        }
-    }
+    timerDisplay.textContent = `Осталось времени: ${timeLeft / 60} минут ${timeLeft % 60} секунд`;
+    timer = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = `Осталось времени: ${Math.floor(timeLeft / 60)} минут ${timeLeft % 60} секунд`;
 
-    function showResult() {
+      if (timeLeft <= 0) {
         clearInterval(timer);
-        document.getElementById('timer').classList.remove('visible');
-        document.getElementById('quiz').innerHTML = '';
-        document.getElementById('nextBtn').classList.add('hidden');
-        document.getElementById('forwardBtn').classList.add('hidden');
-        document.getElementById('backBtn').classList.add('hidden');
-        document.getElementById('progressContainer').classList.remove('visible');
-        document.getElementById('result').classList.add('hidden');
-        
-        const resultHtml = `
+        timerDisplay.textContent = "Время истекло!";
+        document.getElementById("nextBtn").disabled = true;
+        alert("Время вышло!");
+        showResult();
+      }
+    }, 1000);
+  }
+
+  let answeredQuestions = []; // Массив для отслеживания отвеченных вопросов
+
+  function checkAnswer() {
+    if (answeredQuestions[currentQuestion]) {
+      alert("Вы уже ответили на этот вопрос.");
+      return false;
+    }
+
+    document.getElementById("result").classList.remove("hidden");
+
+    let isCorrect = false;
+    let isPartiallyCorrect = false;
+
+    if (currentQuiz.questions[currentQuestion].type === "detailed") {
+      const detailedAnswer = document
+        .getElementById("detailedAnswer")
+        .value.trim();
+      userAnswers[currentQuestion] = detailedAnswer;
+
+      if (detailedAnswer.length === 0) {
+        alert("Пожалуйста, введите ответ.");
+        return false;
+      }
+
+      const correctAnswer =
+        currentQuiz.questions[currentQuestion].answers[0].text;
+
+      if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+        score++;
+        isCorrect = true;
+      }
+
+      document.getElementById("result").innerHTML = isCorrect
+        ? `<span class="correct">Верно!</span>`
+        : `<span class="incorrect">Неверно!</span>`;
+
+      answeredQuestions[currentQuestion] = true;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < currentQuiz.questions.length) {
+          renderQuestion(currentQuiz);
+        } else {
+          showResult();
+        }
+      }, 1000);
+
+      return true;
+    } else {
+      const checkboxes = document.querySelectorAll('input[name="answer"]');
+      let selected = Array.from(checkboxes)
+        .filter((cb) => cb.checked)
+        .map((cb) => Number(cb.value));
+
+      if (selected.length === 0) {
+        alert("Выберите хотя бы один ответ.");
+        return false;
+      }
+
+      userAnswers[currentQuestion] = selected;
+
+      const correctIndexes = currentQuiz.questions[currentQuestion].answers
+        .map((a, i) => (a.isCorrect ? i : null))
+        .filter((i) => i !== null);
+
+      const allCorrectSelected = correctIndexes.every((idx) =>
+        selected.includes(idx),
+      );
+      const anyCorrectSelected = selected.some((idx) =>
+        correctIndexes.includes(idx),
+      );
+
+      if (allCorrectSelected && selected.length === correctIndexes.length) {
+        score++;
+        isCorrect = true;
+      } else if (anyCorrectSelected) {
+        isPartiallyCorrect = true;
+      }
+
+      if (isCorrect) {
+        document.getElementById("result").innerHTML =
+          `<span class="correct">Верно!</span>`;
+      } else if (isPartiallyCorrect) {
+        document.getElementById("result").innerHTML =
+          `<span class="incorrect">Частично верно!</span>`;
+      } else {
+        document.getElementById("result").innerHTML =
+          `<span class="incorrect">Неверно!</span>`;
+      }
+
+      answeredQuestions[currentQuestion] = true;
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < currentQuiz.questions.length) {
+          renderQuestion(currentQuiz);
+        } else {
+          showResult();
+        }
+      }, 1000);
+
+      return true;
+    }
+  }
+
+  function showResult() {
+    clearInterval(timer);
+    document.getElementById("timer").classList.remove("visible");
+    document.getElementById("quiz").innerHTML = "";
+    document.getElementById("nextBtn").classList.add("hidden");
+    document.getElementById("forwardBtn").classList.add("hidden");
+    document.getElementById("backBtn").classList.add("hidden");
+    document.getElementById("progressContainer").classList.remove("visible");
+    document.getElementById("result").classList.add("hidden");
+
+    const resultHtml = `
             <h2>Результаты викторины</h2>
             <p>Красаучек, набрал ${score} балла из ${currentQuiz.questions.length}</p>
             <button onclick="goToQuizList()">К списку тестов</button>
         `;
-        document.getElementById('quiz').innerHTML = resultHtml;
-        answeredQuestions = []; 
-        document.getElementById('nextBtn').disabled = false;
+    document.getElementById("quiz").innerHTML = resultHtml;
+    answeredQuestions = [];
+    document.getElementById("nextBtn").disabled = false;
+  }
+
+  function updateProgressBar(totalQuestions) {
+    const progressBar = document.getElementById("progressBar");
+    const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+  }
+
+  document.getElementById("nextBtn").onclick = function () {
+    if (!checkAnswer()) return;
+    updateProgressBar(currentQuiz.questions.length);
+  };
+
+  document.getElementById("forwardBtn").onclick = function () {
+    if (currentQuestion < currentQuiz.questions.length - 1) {
+      currentQuestion++;
+      renderQuestion(currentQuiz);
     }
+  };
 
-    function updateProgressBar(totalQuestions) {
-        const progressBar = document.getElementById('progressBar');
-        const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
-        progressBar.style.width = `${progressPercentage}%`;
+  window.goBack = function () {
+    if (currentQuestion > 0) {
+      currentQuestion--;
+      renderQuestion(currentQuiz);
+    } else {
+      quizContainer.innerHTML = quizSelectionHtml;
+      quizContainer.classList.add("visible");
+      document.getElementById("nextBtn").classList.add("hidden");
+      document.getElementById("backBtn").classList.add("hidden");
+      document.getElementById("forwardBtn").classList.add("hidden");
+      document.getElementById("progressContainer").classList.remove("visible");
     }
-    
-    document.getElementById('nextBtn').onclick = function () {
-        if (!checkAnswer()) return;
-        updateProgressBar(currentQuiz.questions.length);
-    };
+  };
 
-    document.getElementById('forwardBtn').onclick = function () {
-        if (currentQuestion < currentQuiz.questions.length - 1) {
-            currentQuestion++;
-            renderQuestion(currentQuiz);
-        }
-    };
-
-    window.goBack = function () {
-        if (currentQuestion > 0) {
-            currentQuestion--;
-            renderQuestion(currentQuiz);
-        } else {
-            quizContainer.innerHTML = quizSelectionHtml;
-            quizContainer.classList.add('visible');
-            document.getElementById('nextBtn').classList.add('hidden');
-            document.getElementById('backBtn').classList.add('hidden');
-            document.getElementById('forwardBtn').classList.add('hidden');
-            document.getElementById('progressContainer').classList.remove('visible');
-        }
-    };
-
-    window.goToQuizList = function () {
-        window.location = `#solve_test`;
-    };
+  window.goToQuizList = function () {
+    window.location = `#solve_test`;
+  };
 }

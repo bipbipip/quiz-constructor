@@ -4,7 +4,7 @@ import { render } from "./render.js";
 export function renderQuizList(app) {
   header(app);
 
-   const quizHtml = `
+  const quizHtml = `
         <div class="quiz-container">
             <div id="quiz"></div>
         </div>
@@ -90,8 +90,9 @@ export function renderQuizList(app) {
   }
 
   window.setupPassQuiz = function (idQuiz) {
+    console.log(idQuiz);
     window.location = `#pass_test/${idQuiz}/`;
-};
+  };
 
   // Начальная загрузка
   function initialLoad() {
@@ -120,10 +121,7 @@ export function renderQuizList(app) {
 
   initialLoad();
 
-
   window.setupEditQuiz = function (idQuiz) {
     window.location = `#edit_test/${idQuiz}/`;
   };
-
 }
- 

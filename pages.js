@@ -58,13 +58,13 @@ const pages = {
       ),
   },
   pass_test: {
-    titile: "Прохождение теста",
+    title: "Прохождение теста",
     description: "Здесь вы проходите тест",
     appComponent: () =>
       import("./utils/render/renderPassQuiz.js").then(
         (module) => module.renderPassQuiz,
       ),
-  }
+  },
 };
 
 export async function processPage(pageHash) {

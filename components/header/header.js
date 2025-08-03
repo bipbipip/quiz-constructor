@@ -4,10 +4,12 @@ export function header(app) {
   render(
     app,
     `
-         <header class="header">
-            <a href="#home">Главная меню</a>
-            <a href="#create_test">Создать тест</a>
-            <a href="#solve_test">Список тестов</a>
+         <header class="header container">
+         <div class="header-menu">
+            <a href="#home" class="header-link">Главная меню</a>
+            <a href="#create_test" class="header-link">Создать тест</a>
+            <a href="#solve_test" class="header-link">Список тестов</a>
+            </div>
             <button id="themeToggle">Переключить тему</button>
         </header>
     `,
