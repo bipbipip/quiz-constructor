@@ -64,6 +64,7 @@ textarea.invalid-field {
   100% { transform: rotate(360deg); }
 }
 
+/* Стиль для контейнера прогрессбара */
 .progress-container {
   width: 20em;
   background-color: #eee;
@@ -72,6 +73,7 @@ textarea.invalid-field {
   margin: 10px 0;
 }
 
+/* Стиль для прогрессбара */
 .progress-bar {
   height: 100%;
   background-color: #f94dff; 
@@ -79,18 +81,22 @@ textarea.invalid-field {
   transition: width 0.3s;
 }
 
+/* Стиль для правильного ответа*/
 .correct {
   color: green;
 }
 
+/* Стиль для неверного ответа*/
 .incorrect {
   color: red;
 }
 
+/* Стиль для кнопок*/
 .hidden {
   display: none;
 }
 
+/* Стиль для кнопок*/
 .visible {
   display: block;
 }
