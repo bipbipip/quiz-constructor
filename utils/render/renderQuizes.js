@@ -4,14 +4,11 @@ import { render } from "./render.js";
 export function renderQuizList(app) {
   header(app);
 
-  const quizHtml = `
-    <div class="quiz-container">
-        <div id="quiz" class="quiz-grid"></div>
-        <button class="btn" id="nextBtn" style="display: none;">Ответить</button>
-        <button class="btn" id="backBtn" style="display: none;" onclick="goBack()">Назад</button>
-        <div class="result" id="result"></div>
-    </div>
-  `;
+   const quizHtml = `
+        <div class="quiz-container">
+            <div id="quiz"></div>
+        </div>
+    `;
 
   render(app, quizHtml);
 
@@ -72,13 +69,13 @@ export function renderQuizList(app) {
 
       const quizSelectionHtml = quizzesToShow
         .map(
-          (quiz, index) => `
+          (quiz) => `
       <div class="quiz-card-container">
-        <h2 class="quiz-card-name">${quiz.name}</h2>
-        <p class="quiz-card-description">${quiz.description}</p>
-        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
-        <button onclick="startQuiz(${currentIndex + index})">Пройти тест</button>
-      </div>
+    <h2 class="quiz-card-name">${quiz.name}</h2>
+    <p class="quiz-card-description">${quiz.description}</p>
+    <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
+    <button onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+  </div>
     `,
         )
         .join("");
@@ -92,6 +89,10 @@ export function renderQuizList(app) {
     }, 2000);
   }
 
+  window.setupPassQuiz = function (idQuiz) {
+    window.location = `#pass_test/${idQuiz}/`;
+};
+
   // Начальная загрузка
   function initialLoad() {
     const endIndex = Math.min(initialLoadCount, quizzes.length);
@@ -101,11 +102,11 @@ export function renderQuizList(app) {
       .map(
         (quiz, index) => `
       <div class="quiz-card-container">
-        <h2 class="quiz-card-name">${quiz.name}</h2>
-        <p class="quiz-card-description">${quiz.description}</p>
-        <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
-        <button onclick="startQuiz(${index})">Пройти тест</button>
-      </div>
+    <h2 class="quiz-card-name">${quiz.name}</h2>
+    <p class="quiz-card-description">${quiz.description}</p>
+    <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
+    <button onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+  </div>
     `,
       )
       .join("");
@@ -119,144 +120,8 @@ export function renderQuizList(app) {
 
   initialLoad();
 
-  let currentQuestion = 0;
-  let score = 0;
-  let userAnswers = [];
-  let currentQuiz = null;
-
   window.setupEditQuiz = function (idQuiz) {
     window.location = `#edit_test/${idQuiz}/`;
   };
-  window.startQuiz = function (index) {
-    currentQuiz = quizzes[index];
-    if (!currentQuiz) {
-      alert("Ошибка: викторина не найдена.");
-      return;
-    }
-
-    currentQuestion = 0;
-    score = 0;
-    userAnswers = [];
-
-    document.getElementById("nextBtn").style.display = "block";
-    document.getElementById("backBtn").style.display = "block";
-
-    renderQuestion(currentQuiz);
-  };
-
-  function renderQuestion(quiz) {
-    const question = quiz.questions[currentQuestion];
-    if (!question) return;
-
-    let html = `
-      <h2>${quiz.name}</h2>
-      <p>${quiz.description}</p>
-      <div class="question">${currentQuestion + 1}. ${question.text}</div>
-      <div class="answers">
-    `;
-
-    if (question.type === "detailed") {
-      html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ"></textarea>`;
-    } else {
-      question.answers.forEach((answer, idx) => {
-        const inputType = question.type === "multi" ? "checkbox" : "radio";
-        html += `<label><input type="${inputType}" name="answer" value="${idx}"> ${answer.text}</label><br>`;
-      });
-    }
-
-    html += `</div>`;
-
-    document.getElementById("quiz").innerHTML = html;
-    document.getElementById("result").textContent = "";
-    document.getElementById("nextBtn").textContent =
-      currentQuestion === quiz.questions.length - 1 ? "Завершить" : "Ответить";
-  }
-
-  function checkAnswer() {
-    if (currentQuiz.questions[currentQuestion].type === "detailed") {
-      const detailedAnswer = document
-        .getElementById("detailedAnswer")
-        .value.trim();
-      userAnswers[currentQuestion] = detailedAnswer;
-
-      if (detailedAnswer.length === 0) {
-        alert("Пожалуйста, введите ответ.");
-        return false;
-      }
-
-      const correctAnswer =
-        currentQuiz.questions[currentQuestion].answers[0].text;
-
-      if (detailedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-        score++;
-      }
-
-      return true;
-    } else {
-      const checkboxes = document.querySelectorAll('input[name="answer"]');
-      let selected = Array.from(checkboxes)
-        .filter((cb) => cb.checked)
-        .map((cb) => Number(cb.value));
-
-      if (selected.length === 0) {
-        alert("Выберите хотя бы один ответ.");
-        return false;
-      }
-
-      userAnswers[currentQuestion] = selected;
-
-      const correctIndexes = currentQuiz.questions[currentQuestion].answers
-        .map((a, i) => (a.isCorrect ? i : null))
-        .filter((i) => i !== null);
-
-      const isCorrect = selected.every((s) => correctIndexes.includes(s));
-      if (isCorrect) score++;
-      return true;
-    }
-  }
-
-  function showResult() {
-    document.getElementById("quiz").innerHTML = "";
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("backBtn").style.display = "none";
-
-    const resultHtml = `
-      <h2>Результаты викторины</h2>
-      <p>Красаучек, набрал ${score} балла из ${currentQuiz.questions.length} </p>
-      <button onclick="goToQuizList()">К списку тестов</button>
-    `;
-    document.getElementById("quiz").innerHTML = resultHtml;
-  }
-
-  document.getElementById("nextBtn").onclick = function () {
-    if (!checkAnswer()) return;
-
-    currentQuestion++;
-    if (currentQuestion < currentQuiz.questions.length) {
-      renderQuestion(currentQuiz);
-    } else {
-      showResult();
-    }
-  };
-
-  window.goBack = function () {
-    if (currentQuestion > 0) {
-      currentQuestion--;
-      renderQuestion(currentQuiz);
-    } else {
-      currentIndex = 0;
-      quizContainer.innerHTML = "";
-      initialLoad();
-      document.getElementById("nextBtn").style.display = "none";
-      document.getElementById("backBtn").style.display = "none";
-    }
-  };
-
-  window.goToQuizList = function () {
-    currentIndex = 0;
-    quizContainer.innerHTML = "";
-    initialLoad();
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("backBtn").style.display = "none";
-  };
 }
+ 
