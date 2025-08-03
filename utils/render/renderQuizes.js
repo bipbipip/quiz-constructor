@@ -120,8 +120,10 @@ export function renderQuizList(app) {
 
   initialLoad();
 
+
   window.setupEditQuiz = function (idQuiz) {
     window.location = `#edit_test/${idQuiz}/`;
   };
+
 }
  
