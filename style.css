@@ -3,13 +3,13 @@
   padding: 0;
   margin: 0;
 }
-/* @font-face {
+@font-face {
   font-family: "Poiret One";
   font-style: normal;
   font-weight: normal;
   src: local("Poiret One"),
   url("./fonts/PoiretOne-Regular.ttf") format("ttf");
-} */
+}
 
 .create-quiz-form {
   display: flex;
@@ -202,6 +202,7 @@ body {
   display: flex;
   flex-direction: column;
   font-family: 'Poiret One', sans-serif;
+  gap: 10px;
 }
 
 
@@ -284,4 +285,63 @@ body {
   border-radius: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.checkbox {
+  display: flex;
+  align-items: center;
+
+}
+
+.checkbox input[type="checkbox"],
+.checkbox input[type="radio"] {
+  display: none; 
+}
+
+.checkbox label {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.checkbox label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border: 1px solid #00ab78;
+  background: white;
+  border-radius: 4px;
+  
+}
+
+.checkbox input[type="radio"] + label:before {
+  border-radius: 50%; 
+}
+
+.checkbox input[type="checkbox"]:checked + label:before {
+  background: #00ab78; 
+  border-color: #007f67; 
+}
+
+.checkbox input[type="radio"]:checked + label:before {
+  background: #00ab78;
+  border-color: #007f67; 
+}
+
+.checkbox input[type="checkbox"]:checked + label:after {
+  content: "✔";
+  position: absolute;
+  left: 1px;
+  top: 41%;
+  transform: translateY(-50%);
+  color: white; 
+  font-size: 18px;
+}
+
+
+
 

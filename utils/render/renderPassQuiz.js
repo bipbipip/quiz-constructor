@@ -93,8 +93,13 @@ export function renderPassQuiz(app) {
     } else {
       question.answers.forEach((answer, idx) => {
         const inputType = question.type === "multi" ? "checkbox" : "radio";
-        html += `<label><input type="${inputType}" class="checkbox-button" name="answer" value="${idx}"> ${answer.text}</label><br>`;
-      });
+        html += `
+            <div class="checkbox">
+                <input type="${inputType}" id="answer${idx}" name="answer" value="${idx}" />
+                <label for="answer${idx}">${answer.text}</label>
+            </div>
+        `;
+    });
     }
 
     html += `</div>`;

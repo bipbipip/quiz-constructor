@@ -15,9 +15,8 @@ export function renderPreviewQuiz(app) {
   addStyles(); // Добавляем стили
 
   const quizHtml = `
-        <div class="quiz-body">
+      <div class="quiz-body">
         <div class="quiz-container">
-            <div id="quiz"></div>
             <div id="quiz"></div>
             <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
             <button class="btn hidden" id="toListBtn">К списку тестов</button>
@@ -94,7 +93,12 @@ function renderQuestion(quiz, index) {
   } else {
     question.answers.forEach((answer, idx) => {
       const inputType = question.type === "multi" ? "checkbox" : "radio"; // Определяем тип input
-      html += `<label><input type="${inputType}" name="answer-${index}" value="${idx}" disabled> ${answer.text}</label><br>`;
+      html += `
+            <div class="checkbox">
+                <input type="${inputType}" id="answer${idx}" name="answer" value="${idx}" />
+                <label for="answer${idx}">${answer.text}</label>
+            </div>
+        `;
     });
   }
 
