@@ -45,7 +45,7 @@ export function renderPassQuiz(app) {
   // Получаем quizId из URL
   const currentUrl = window.location.href;
   const parts = currentUrl.split("/");
-  const quizId = parts[4] ? parts[4] : "";
+  const quizId = parts[5] ? parts[5] : "";
 
   // Получаем тест по quizId
   const quiz = getItem(`quiz_${quizId}`);
@@ -99,7 +99,7 @@ export function renderPassQuiz(app) {
                 <label for="answer${idx}">${answer.text}</label>
             </div>
         `;
-    });
+      });
     }
 
     html += `</div>`;

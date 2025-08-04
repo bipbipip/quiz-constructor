@@ -8,7 +8,14 @@
   font-style: normal;
   font-weight: normal;
   src: local("Poiret One"),
-  url("./fonts/PoiretOne-Regular.ttf") format("ttf");
+  url("./fonts/PoiretOne-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Bebas-Neue";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Bebas-Neue"),
+  url("./fonts/Bebas-Neue.ttf") format("truetype");
 }
 
 .create-quiz-form {
@@ -81,16 +88,16 @@ textarea.invalid-field {
 .progress-container {
   align-self: center;
   width: 75%;
-  background-color:var(--pb-color);  
+  background-color:var(--pb-color);
   border-radius: 5px;
   height: 20px;
-  
-} 
+
+}
 
 /* Стиль для прогрессбара */
 .progress-bar {
   height: 100%;
-  background-color: #00ab78; 
+  background-color: #00ab78;
   border-radius: 5px;
   transition: width 0.3s;
 }
@@ -117,8 +124,9 @@ textarea.invalid-field {
 #themeToggle {
   border-radius: 10px;
   padding: 10px 5px;
+  font-family: "Poiret One";
+  font-weight: bold;
   font-size: 16px;
-  font-weight: lighter;
   border: #00ab78 1px solid;
   background-color: var(--bg-color);
   color: #00ab78;
@@ -191,6 +199,7 @@ body {
 }
 .header-link {
   font-family: 'Poiret One', sans-serif;
+  font-weight: bold;
   text-decoration: none;
   color: var(--change-theme-text);
 }
@@ -257,7 +266,7 @@ body {
   align-self: center;
   font-size: 20px;
   padding-top: 10px;
-  
+
   }
 .test-buttons {
   display: flex;
@@ -301,7 +310,7 @@ body {
 
 .checkbox input[type="checkbox"],
 .checkbox input[type="radio"] {
-  display: none; 
+  display: none;
 }
 
 .checkbox label {
@@ -322,21 +331,21 @@ body {
   border: 1px solid #00ab78;
   background: white;
   border-radius: 4px;
-  
+
 }
 
 .checkbox input[type="radio"] + label:before {
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .checkbox input[type="checkbox"]:checked + label:before {
-  background: #00ab78; 
-  border-color: #007f67; 
+  background: #00ab78;
+  border-color: #007f67;
 }
 
 .checkbox input[type="radio"]:checked + label:before {
   background: #00ab78;
-  border-color: #007f67; 
+  border-color: #007f67;
 }
 
 .checkbox input[type="checkbox"]:checked + label:after {
@@ -345,8 +354,40 @@ body {
   left: 1px;
   top: 41%;
   transform: translateY(-50%);
-  color: white; 
+  color: white;
   font-size: 18px;
+}
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  width: fit-content;
+  gap: 20px;
+  padding: 20px;
+  border: var(--text-color) 1px solid;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.home-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.home-section-head {
+  font-family: 'Bebas-Neue';
+
+
+}
+.home-section-list {
+  font-family: "Poiret One";
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.home-section-list-item {
+  margin-left: 20px;
 }
 
 
