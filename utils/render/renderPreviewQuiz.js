@@ -15,12 +15,15 @@ export function renderPreviewQuiz(app) {
   addStyles(); // Добавляем стили
 
   const quizHtml = `
+        <div class="quiz-body">
         <div class="quiz-container">
+            <div id="quiz"></div>
             <div id="quiz"></div>
             <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
             <button class="btn hidden" id="toListBtn">К списку тестов</button>
             <button class="btn" id="forwardBtn">Вперед</button>
         </div>
+      </div>
     `;
 
   render(app, quizHtml); // Рендерим HTML для теста
@@ -31,7 +34,7 @@ export function renderPreviewQuiz(app) {
 function setupPreviewQuiz() {
   const currentUrl = window.location.href; // Получаем текущий URL
   const parts = currentUrl.split("/"); // Разбиваем URL на части
-  const quizId = parts[5] ? parts[5] : ""; // Извлекаем quizId из четвёртой части URL
+  const quizId = parts[4] ? parts[4] : ""; // Извлекаем quizId из четвёртой части URL
 
   const quiz = getItem(`quiz_${quizId}`); // Получаем тест из localStorage
 
@@ -87,7 +90,7 @@ function renderQuestion(quiz, index) {
 
   // В зависимости от типа вопроса рендерим ответы
   if (question.type === "detailed") {
-    html += `<textarea placeholder="Введите ваш ответ" disabled></textarea>`;
+    html += `<textarea id="detailedAnswer" placeholder="Введите ваш ответ" disabled></textarea>`;
   } else {
     question.answers.forEach((answer, idx) => {
       const inputType = question.type === "multi" ? "checkbox" : "radio"; // Определяем тип input
