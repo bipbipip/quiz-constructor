@@ -15,17 +15,21 @@ export function renderPassQuiz(app) {
   header(app);
 
   const quizHtml = `
+    <div class="quiz-body">
         <div class="quiz-container">
             <div id="quiz"></div>
+            <div class="test-buttons">
+            <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
             <button class="btn hidden" id="nextBtn">Ответить</button>
             <button class="btn hidden" id="forwardBtn">Вперед</button>
-            <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
+            </div>
             <div class="progress-container hidden" id="progressContainer">
                 <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
             </div>
             <div class="timer hidden" id="timer"></div>
             <div class="result" id="result"></div>
         </div>
+      </div>
     `;
 
   render(app, quizHtml);
@@ -41,7 +45,7 @@ export function renderPassQuiz(app) {
   // Получаем quizId из URL
   const currentUrl = window.location.href;
   const parts = currentUrl.split("/");
-  const quizId = parts[5] ? parts[5] : "";
+  const quizId = parts[4] ? parts[4] : "";
 
   // Получаем тест по quizId
   const quiz = getItem(`quiz_${quizId}`);
@@ -52,7 +56,7 @@ export function renderPassQuiz(app) {
     return;
   }
 
-  totalTime = quiz.questions.length * 60; // 60 секунд на вопрос
+  totalTime = quiz.questions.length * 6000; // 60 секунд на вопрос
   timeLeft = totalTime;
 
   // Старт теста
@@ -89,8 +93,13 @@ export function renderPassQuiz(app) {
     } else {
       question.answers.forEach((answer, idx) => {
         const inputType = question.type === "multi" ? "checkbox" : "radio";
-        html += `<label><input type="${inputType}" class="checkbox-button" name="answer" value="${idx}"> ${answer.text}</label><br>`;
-      });
+        html += `
+            <div class="checkbox">
+                <input type="${inputType}" id="answer${idx}" name="answer" value="${idx}" />
+                <label for="answer${idx}">${answer.text}</label>
+            </div>
+        `;
+    });
     }
 
     html += `</div>`;
@@ -250,7 +259,7 @@ export function renderPassQuiz(app) {
     const resultHtml = `
             <h2>Результаты викторины</h2>
             <p>Красаучек, набрал ${score} балла из ${currentQuiz.questions.length}</p>
-            <button onclick="goToQuizList()">К списку тестов</button>
+            <button class="testList" onclick="goToQuizList()">К списку тестов</button>
         `;
     document.getElementById("quiz").innerHTML = resultHtml;
     answeredQuestions = [];
