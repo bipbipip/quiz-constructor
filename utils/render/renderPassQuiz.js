@@ -17,7 +17,7 @@ export function renderPassQuiz(app) {
   const quizHtml = `
     <div class="quiz-body">
         <div class="quiz-container">
-            <div id="quiz"></div>
+            <div id="quiz" class="pass-quiz"></div>
             <div class="test-buttons">
             <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
             <button class="btn hidden" id="nextBtn">Ответить</button>
@@ -56,7 +56,7 @@ export function renderPassQuiz(app) {
     return;
   }
 
-  totalTime = quiz.questions.length * 6000; // 60 секунд на вопрос
+  totalTime = quiz.questions.length * 60; // 60 секунд на вопрос
   timeLeft = totalTime;
 
   // Старт теста
@@ -241,7 +241,6 @@ export function renderPassQuiz(app) {
           showResult();
         }
       }, 1000);
-
       return true;
     }
   }
@@ -266,11 +265,12 @@ export function renderPassQuiz(app) {
     document.getElementById("nextBtn").disabled = false;
   }
 
-  function updateProgressBar(totalQuestions) {
-    const progressBar = document.getElementById("progressBar");
-    const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
-    progressBar.style.width = `${progressPercentage}%`;
-  }
+function updateProgressBar(totalQuestions) {
+  const progressBar = document.getElementById("progressBar");
+  const answeredCount = answeredQuestions.filter(Boolean).length;
+  const progressPercentage = (answeredCount / totalQuestions) * 100;
+  progressBar.style.width = `${progressPercentage}%`;
+}
 
   document.getElementById("nextBtn").onclick = function () {
     if (!checkAnswer()) return;

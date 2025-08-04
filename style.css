@@ -229,7 +229,14 @@ body {
   transition: 0.5s;
 }
 
-#quiz {
+.pass-quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 18px;
+}
+
+.preview-quiz{
   display: flex;
   flex-direction: column;
   gap: 20px;

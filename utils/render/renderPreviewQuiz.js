@@ -17,7 +17,7 @@ export function renderPreviewQuiz(app) {
   const quizHtml = `
       <div class="quiz-body">
         <div class="quiz-container">
-            <div id="quiz"></div>
+            <div id="quiz" class="preview-quiz"></div>
             <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
             <button class="btn hidden" id="toListBtn">К списку тестов</button>
             <button class="btn" id="forwardBtn">Вперед</button>
