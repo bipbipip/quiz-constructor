@@ -6,7 +6,7 @@ export function renderQuizList(app) {
 
   const quizHtml = `
         <div class="quiz-container">
-            <div id="quiz"></div>
+            <div id="quiz" class="quiz-grid"></div>
         </div>
     `;
 
