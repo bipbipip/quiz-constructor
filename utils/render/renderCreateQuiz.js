@@ -8,15 +8,15 @@ export function renderCreateQuiz(app) {
   render(
     app,
     `
-        <div class="container">
-            <h1>Создать тест</h1>
+        <div class="create container">
+            <h1 class="home-section-head">Создать тест</h1>
             <div class="create-quiz">
                 <form  method="get" class="create-quiz-form">
-                    <input type="text" id="key" name="quizName" placeholder="Название теста">
-                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
-                    <button type="button" id="addQuestionBtn">Добавить вопрос</button>
-                    <div id="questionContainer"></div>
-                    <button type="button" id="saveQuizBtn">Создать тест</button>
+                    <input type="text" id="key" class="main-input-field" name="quizName" placeholder="Название теста">
+                    <input type="text" id="description" class="main-input-field" name="quizDescription" placeholder="Описание теста">
+                    <button type="button" class="quiz-button" id="addQuestionBtn">Добавить вопрос</button>
+                    <div id="questionContainer" class="question-container"></div>
+                    <button type="button" class="quiz-button" id="saveQuizBtn">Создать тест</button>
                 </form>
             </div>
         </div>
@@ -39,6 +39,7 @@ export function addQuestion() {
   const questionFieldName = document.createElement("input");
   questionFieldName.type = "text";
   questionFieldName.placeholder = "Введите вопрос";
+  questionFieldName.className = "main-input-field";
   questionFieldName.name = `question-${questionNumber}-text`;
   questionFieldName.required = true;
   questionFieldName.addEventListener("input", function () {
@@ -67,6 +68,7 @@ export function addQuestion() {
   // Кнопка удаления
   const deleteQuestion = document.createElement("button");
   deleteQuestion.type = "button";
+  deleteQuestion.className = "quiz-button";
   deleteQuestion.textContent = "Удалить вопрос";
   deleteQuestion.onclick = function () {
     questionWrapper.remove();
@@ -118,6 +120,7 @@ export function addAnswer(
   const addAnswerBtn = document.createElement("button");
   addAnswerBtn.type = "button";
   addAnswerBtn.textContent = "Добавить вариант ответа";
+  addAnswerBtn.className = "quiz-button";
 
   addAnswerBtn.onclick = function () {
     let answerCount = getRandomString(9);
@@ -127,6 +130,7 @@ export function addAnswer(
 
     const answerInput = document.createElement("input");
     answerInput.type = "text";
+    answerInput.className = "main-input-field";
     answerInput.placeholder = "Вариант ответа";
     answerInput.required = true;
     answerInput.name = `question-${questionNumber}-answer-${answerCount}-text`;
@@ -138,6 +142,7 @@ export function addAnswer(
     const correctCheckbox = document.createElement("input");
     correctCheckbox.type = answerType;
     correctCheckbox.name = `question-${questionNumber}-answer`;
+    correctCheckbox.className = "checkbox";
     correctCheckbox.value = "true";
     correctCheckbox.addEventListener("input", function () {
       const correctAnswer = document.querySelectorAll(
@@ -152,6 +157,7 @@ export function addAnswer(
 
     const deleteAnswerBtn = document.createElement("button");
     deleteAnswerBtn.type = "button";
+    deleteAnswerBtn.className = "quiz-button";
     deleteAnswerBtn.textContent = "Удалить";
     deleteAnswerBtn.onclick = function () {
       answerWrapper.remove();
@@ -176,6 +182,7 @@ export function addDetailedAnswer(questionWrapper, questionNumber) {
 
   const answerInput = document.createElement("textarea");
   answerInput.placeholder = "Поле для развернутого ответа";
+  answerInput.className = "main-input-textarea";
   answerInput.name = `question-${questionNumber}-answer`;
 
   answerContainer.appendChild(answerInput);

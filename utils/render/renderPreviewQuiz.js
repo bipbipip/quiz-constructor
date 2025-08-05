@@ -33,7 +33,7 @@ export function renderPreviewQuiz(app) {
 function setupPreviewQuiz() {
   const currentUrl = window.location.href; // Получаем текущий URL
   const parts = currentUrl.split("/"); // Разбиваем URL на части
-  const quizId = parts[4] ? parts[4] : ""; // Извлекаем quizId из четвёртой части URL
+  const quizId = parts[5] ? parts[5] : ""; // Извлекаем quizId из четвёртой части URL
 
   const quiz = getItem(`quiz_${quizId}`); // Получаем тест из localStorage
 
