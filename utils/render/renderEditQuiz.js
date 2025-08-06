@@ -17,15 +17,15 @@ export function renderEditQuiz(app) {
   render(
     app,
     `
-        <div class="container">
-            <h1>Изменить тест</h1>
+        <div class="create container">
+            <h1 class="home-section-head">Изменить тест</h1>
             <div class="create-quiz">
                 <form method="get" class="create-quiz-form">
-                    <input type="text" id="key" name="quizName" placeholder="Название теста">
-                    <input type="text" id="description" name="quizDescription" placeholder="Описание теста">
-                    <button type="button" id="addQuestionBtn">Добавить вопрос</button>
-                    <div id="questionContainer"></div>
-                    <button type="button" id="saveQuizBtn">Сохранить изменения</button>
+                    <input type="text" id="key" class="main-input-field" name="quizName" placeholder="Название теста">
+                    <input type="text" id="description" class="main-input-field" name="quizDescription" placeholder="Описание теста">
+                    <button type="button" id="addQuestionBtn" class="quiz-button">Добавить вопрос</button>
+                    <div id="questionContainer" class="question-container"></div>
+                    <button type="button" id="saveQuizBtn" class="quiz-button">Сохранить изменения</button>
                 </form>
             </div>
         </div>
@@ -141,7 +141,7 @@ function updateQuiz(quizId) {
 
   // Сохраняем обновленный квиз
   try {
-    // Используем updateItem с правильным callback
+    // Используем updateItem
     updateItem(`quiz_${quizId}`, (existingItem) => {
       // Парсим существующий item
       const parsedItem = JSON.parse(existingItem);
@@ -179,6 +179,7 @@ function restoreQuizQuestions(questions) {
     const questionFieldName = document.createElement("input");
     questionFieldName.type = "text";
     questionFieldName.placeholder = "Введите вопрос";
+    questionFieldName.className = "main-input-field";
     questionFieldName.name = `${questionWrapper.id}-text`;
     questionFieldName.value = question.text || "";
     questionFieldName.required = true;
@@ -208,6 +209,7 @@ function restoreQuizQuestions(questions) {
     const deleteQuestion = document.createElement("button");
     deleteQuestion.type = "button";
     deleteQuestion.textContent = "Удалить вопрос";
+    deleteQuestion.className = "quiz-button";
     deleteQuestion.onclick = function () {
       questionWrapper.remove();
     };
@@ -251,6 +253,7 @@ function restoreQuestionAnswers(questionWrapper, question) {
     if (!addBtn) {
       const addAnswerBtn = document.createElement("button");
       addAnswerBtn.type = "button";
+      addAnswerBtn.className = "quiz-button";
       addAnswerBtn.textContent = "Добавить вариант ответа";
       addAnswerBtn.onclick = function () {
         addNewAnswer(questionWrapper, question.type);
@@ -272,6 +275,7 @@ function restoreQuestionAnswers(questionWrapper, question) {
   else if (question.type === "detailed") {
     const answerTextarea = document.createElement("textarea");
     answerTextarea.placeholder = "Поле для развернутого ответа";
+    answerTextarea.className = "main-input-textarea";
     answerTextarea.name = `${questionWrapper.id}-answer`;
     if (question.answers && question.answers[0]?.text) {
       answerTextarea.value = question.answers[0].text;
@@ -292,6 +296,7 @@ function addNewAnswer(questionWrapper, questionType, answerData = null) {
   const answerInput = document.createElement("input");
   answerInput.type = "text";
   answerInput.placeholder = "Вариант ответа";
+  answerInput.className = "main-input-field";
   answerInput.required = true;
   answerInput.name = `${questionWrapper.id}-answer-${answerWrapper.id}-text`;
   if (answerData?.text) {
@@ -302,6 +307,7 @@ function addNewAnswer(questionWrapper, questionType, answerData = null) {
   const correctInput = document.createElement("input");
   correctInput.type = questionType === "single" ? "radio" : "checkbox";
   correctInput.name = `${questionWrapper.id}-correct-answer`;
+  correctInput.className = "checkbox";
   if (answerData?.isCorrect) {
     correctInput.checked = true;
   }
@@ -310,6 +316,7 @@ function addNewAnswer(questionWrapper, questionType, answerData = null) {
   const deleteAnswerBtn = document.createElement("button");
   deleteAnswerBtn.type = "button";
   deleteAnswerBtn.textContent = "Удалить";
+  deleteAnswerBtn.className = "quiz-button";
   deleteAnswerBtn.onclick = function () {
     answerWrapper.remove();
   };
