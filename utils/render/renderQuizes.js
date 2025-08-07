@@ -5,8 +5,8 @@ export function renderQuizList(app) {
   header(app);
 
   const quizHtml = `
-        <div class="quiz-container">
-            <div id="quiz" class="quiz-grid"></div>
+        <div class="quizzes container">
+            <div id="quiz" class="quiz-grid "></div>
         </div>
     `;
 
@@ -73,8 +73,10 @@ export function renderQuizList(app) {
       <div class="quiz-card-container">
     <h2 class="quiz-card-name">${quiz.name}</h2>
     <p class="quiz-card-description">${quiz.description}</p>
-    <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
-    <button onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+    <div class="quiz-card-buttons">
+    <button class="quiz-button" onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+    <button class="quiz-button" onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
+    </div>
   </div>
     `,
         )
@@ -105,8 +107,10 @@ export function renderQuizList(app) {
       <div class="quiz-card-container">
     <h2 class="quiz-card-name">${quiz.name}</h2>
     <p class="quiz-card-description">${quiz.description}</p>
-    <button onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
-    <button onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+    <div class="quiz-card-buttons">
+    <button class="quiz-button" onclick="setupPassQuiz('${quiz.id}')">Пройти тест</button>
+    <button class="quiz-button" onclick="setupEditQuiz('${quiz.id}')">Изменить</button>
+    </div>
   </div>
     `,
       )

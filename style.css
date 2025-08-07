@@ -63,16 +63,26 @@ textarea.invalid-field {
   grid-template-rows: repeat(4, 1fr);
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-  padding: 50px 200px;
+
 
 }
 .quiz-card-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 10px 0;
-  border: 1px solid #000000;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+.quiz-card-name {
+  font-family: "Bebas-Neue";
+}
+.quiz-card-description {
+  font-family: "Bebas-Neue";
+  font-style: italic;
+  font-weight: bold;
 }
 .loader {
   border: 4px solid #f3f3f3;
@@ -537,3 +547,13 @@ input[type="checkbox"].checkbox:checked:after {
   top: -37%;
 }
 
+.quizzes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: #ccc 1px solid;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
