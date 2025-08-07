@@ -1,0 +1,57 @@
+@media screen and (max-width: 1200px) {
+    .quiz-container {
+    
+     }
+     
+     .header {
+        max-width: 300px;
+     }
+     
+}
+
+
+@media screen and (max-width: 1024px) {
+    .progress-container {
+     
+       
+       
+      
+      }
+
+      .quiz-body {
+        
+      }
+
+    .quiz-container {
+       min-width: unset;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .quiz-body {
+        max-width: 468px;
+    }
+    html {
+        max-width: 280px;
+    }
+
+}
+
+@media screen and (max-width: 425px) {
+
+}
+
+@media screen and (max-width: 375px) {
+    
+}
+
+@media screen and (max-width: 320px) {
+
+
+}
+
+@media screen and (max-width: 280px) {
+
+
+
+}

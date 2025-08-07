@@ -221,9 +221,8 @@ body {
 
 .quiz-body {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding-top: 50px;
+  padding: 50px 50px 0 50px
 }
 
 .btn {
@@ -234,6 +233,7 @@ body {
   border: #00ab78 1px solid;
   background-color: var(--bg-color);
   color: #00ab78;
+  font-family: 'Bebas-Neue';
 }
 .btn:hover{
   color: #ffffff;
@@ -263,7 +263,8 @@ body {
   border-radius: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   gap: 10px;
-  min-width: 75vh;
+  max-width: fit-content;
+  font-family: "Poiret One";
 }
 
 .timer {
@@ -277,6 +278,7 @@ body {
   gap: 30px;
   align-self: center;
   padding-bottom: 10px;
+  
 
 }
 
@@ -304,6 +306,11 @@ body {
   border: 1px solid #ccc;
   border-radius: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 5px 10px;
+  font-family: "Bebas-Neue";
+  font-weight: bold;
+  min-width: 280px;
+  min-height: 50px;
 }
 
 .checkbox {

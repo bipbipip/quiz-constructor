@@ -2,18 +2,11 @@ import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { getItem } from "../../storage.js";
 
-// Функция для добавления стилей на страницу
-function addStyles() {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "../style.css";
-  document.head.appendChild(link);
-}
+
 
 export function renderPreviewQuiz(app) {
   header(app);
-  addStyles(); // Добавляем стили
-
+ 
   const quizHtml = `
       <div class="quiz-body">
         <div class="quiz-container">
@@ -33,7 +26,7 @@ export function renderPreviewQuiz(app) {
 function setupPreviewQuiz() {
   const currentUrl = window.location.href; // Получаем текущий URL
   const parts = currentUrl.split("/"); // Разбиваем URL на части
-  const quizId = parts[5] ? parts[5] : ""; // Извлекаем quizId из четвёртой части URL
+  const quizId = parts[4] ? parts[4] : ""; // Извлекаем quizId из четвёртой части URL
 
   const quiz = getItem(`quiz_${quizId}`); // Получаем тест из localStorage
 
