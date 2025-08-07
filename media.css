@@ -6,7 +6,18 @@
      .header {
         max-width: 300px;
      }
-     
+     .home-section-head {
+         font-size: 14px;
+     }
+     .question {
+         font-size: 14px;
+     }
+     .quiz-container {
+         max-width: 200px;
+     }
+     .test-buttons {
+         flex-direction: column;
+     }
 }
 
 
@@ -24,6 +35,9 @@
 
     .quiz-container {
        min-width: unset;
+    }
+    .question {
+        font-size: 8px;
     }
 }
 
