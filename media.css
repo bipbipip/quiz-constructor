@@ -1,8 +1,5 @@
 @media screen and (max-width: 1200px) {
      
-     .home-section-head {
-         font-size: 14px;
-     }
      .question {
          font-size: 14px;
      }
@@ -106,7 +103,7 @@
     }
 }
 @media screen and (max-width: 768px) {
-    
+
     .quiz-container {
         max-width: 420px;
 
@@ -126,8 +123,23 @@
         max-width: 80px;
     }
 }
+@media screen and (max-width: 600px) {
+    .home {
+        margin: 50px 30px 0 ;
+    }
+    .home-section-head {
+        font-size: 20px;
+    }
+    .home-section-subhead {
+        font-size: 16px;
+    }
+    .home-section-list {
+        font-size: 14px;
+    }
+}
 
 @media screen and (max-width: 425px) {
+
     .quiz-container{
         max-width: 370px;
     }
@@ -141,12 +153,31 @@
 }
 
 @media screen and (max-width: 375px) {
+    .home-section {
+        gap: 10px;
+    }
+    .home-section-head {
+        font-size: 18px;
+    }
+    .home-section-subhead {
+        font-size: 14px;
+    }
+    .home-section-list {
+        font-size: 12px;
+    }
     .quiz-container{
         max-width: 310px;
+    }
+    #themeToggle {
+        font-size: 14px;
+
     }
 }
 
 @media screen and (max-width: 320px) {
+    .home-section-list {
+        font-size: 8px;
+    }
 .quiz-container{
         max-width: 270px;
     }
