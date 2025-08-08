@@ -96,6 +96,21 @@
     .home-section-list {
         font-size: 14px;
     }
+    .main-input-field {
+        font-size: 12px;
+    }
+    .question-type {
+        font-size: 12px;
+    }
+    .main-input-textarea {
+        font-size: 12px;
+    }
+    .quiz-button {
+        font-size: 12px;
+    }
+    .answer-wrapper {
+        font-size: 12px;
+    }
 }
 
 @media screen and (max-width: 425px) {
@@ -109,7 +124,18 @@
     .timer {
         font-size: 14px;
     }
-
+    .quiz-button {
+        padding: 5px 3px;
+    }
+    .answer-wrapper {
+        flex-direction: column;
+    }
+    .main-input-field {
+        width: 100%;
+    }
+    .main-input-textarea {
+        min-width: 200px;
+    }
 }
 
 @media screen and (max-width: 375px) {
