@@ -272,7 +272,7 @@ body {
 }
 .menu-list {
   top: 100%;
-  left: -3%;
+  left: -8%;
   position: absolute;
   display: grid;
   gap: 12px;
@@ -526,6 +526,8 @@ body {
   font-family: "Bebas-Neue";
   font-weight: bold;
   font-size: 16px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .main-input-field:focus {
@@ -577,6 +579,8 @@ body {
   font-family: "Bebas-Neue";
   font-weight: bold;
   font-size: 16px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 .question-type:focus {
   outline: none;
@@ -600,6 +604,13 @@ body {
   align-items: center;
   font-family: "Poiret One";
   font-weight: bold;
+}
+.answer-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
 }
 input[type="radio"].checkbox{
   appearance: none;
@@ -648,5 +659,8 @@ input[type="checkbox"].checkbox:checked:after {
   margin-top: 50px;
   margin-bottom: 50px;
 }
-
+.create-intro {
+  display: flex;
+  justify-content: center;
+}
 /*//////////////////////*/

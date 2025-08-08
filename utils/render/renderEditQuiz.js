@@ -17,7 +17,8 @@ export function renderEditQuiz(app) {
   render(
     app,
     `
-        <div class="create container">
+    <div class="create-intro container">
+        <div class="create ">
             <h1 class="home-section-head">Изменить тест</h1>
             <div class="create-quiz">
                 <form method="get" class="create-quiz-form">
@@ -29,6 +30,7 @@ export function renderEditQuiz(app) {
                 </form>
             </div>
         </div>
+    </div>
     `,
   );
 
@@ -292,6 +294,9 @@ function addNewAnswer(questionWrapper, questionType, answerData = null) {
   answerWrapper.className = "answer-wrapper";
   answerWrapper.id = `answer-${answerData?.id || getRandomString(9)}`;
 
+  const answerSection = document.createElement("div");
+  answerSection.className = "answer-section";
+
   // Поле для текста ответа
   const answerInput = document.createElement("input");
   answerInput.type = "text";
@@ -323,9 +328,10 @@ function addNewAnswer(questionWrapper, questionType, answerData = null) {
 
   // Собираем ответ
   answerWrapper.appendChild(answerInput);
-  answerWrapper.appendChild(document.createTextNode(" Правильный ответ: "));
-  answerWrapper.appendChild(correctInput);
-  answerWrapper.appendChild(deleteAnswerBtn);
+  answerSection.appendChild(document.createTextNode(" Правильный ответ: "));
+  answerSection.appendChild(correctInput);
+  answerSection.appendChild(deleteAnswerBtn);
+  answerWrapper.appendChild(answerSection);
 
   // Находим кнопку добавления ответа
   const addBtn = answerContainer.querySelector("button");

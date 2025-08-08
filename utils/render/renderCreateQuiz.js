@@ -8,17 +8,19 @@ export function renderCreateQuiz(app) {
   render(
     app,
     `
-        <div class="create container">
-            <h1 class="home-section-head">Создать тест</h1>
-            <div class="create-quiz">
-                <form  method="get" class="create-quiz-form">
-                    <input type="text" id="key" class="main-input-field" name="quizName" placeholder="Название теста">
-                    <input type="text" id="description" class="main-input-field" name="quizDescription" placeholder="Описание теста">
-                    <button type="button" class="quiz-button" id="addQuestionBtn">Добавить вопрос</button>
-                    <div id="questionContainer" class="question-container"></div>
-                    <button type="button" class="quiz-button" id="saveQuizBtn">Создать тест</button>
-                </form>
-            </div>
+        <div class="create-intro container">
+          <div class="create">
+              <h1 class="home-section-head">Создать тест</h1>
+              <div class="create-quiz">
+                  <form  method="get" class="create-quiz-form">
+                      <input type="text" id="key" class="main-input-field" name="quizName" placeholder="Название теста">
+                      <input type="text" id="description" class="main-input-field" name="quizDescription" placeholder="Описание теста">
+                      <button type="button" class="quiz-button" id="addQuestionBtn">Добавить вопрос</button>
+                      <div id="questionContainer" class="question-container"></div>
+                      <button type="button" class="quiz-button" id="saveQuizBtn">Создать тест</button>
+                  </form>
+              </div>
+          </div>
         </div>
     `,
   );
@@ -128,6 +130,9 @@ export function addAnswer(
     answerWrapper.className = "answer-wrapper";
     answerWrapper.id = `answer-${answerCount}`;
 
+    const answerSection = document.createElement("div");
+    answerSection.className = "answer-section";
+
     const answerInput = document.createElement("input");
     answerInput.type = "text";
     answerInput.className = "main-input-field";
@@ -164,9 +169,10 @@ export function addAnswer(
     };
 
     answerWrapper.appendChild(answerInput);
-    answerWrapper.appendChild(document.createTextNode(" Правильный ответ: "));
-    answerWrapper.appendChild(correctCheckbox);
-    answerWrapper.appendChild(deleteAnswerBtn);
+    answerSection.appendChild(document.createTextNode(" Правильный ответ: "));
+    answerSection.appendChild(correctCheckbox);
+    answerSection.appendChild(deleteAnswerBtn);
+    answerWrapper.appendChild(answerSection);
     answerContainer.appendChild(answerWrapper);
   };
 
