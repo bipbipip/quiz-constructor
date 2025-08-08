@@ -36,7 +36,7 @@ export function renderPassQuiz(app) {
   // Получаем quizId из URL
   const currentUrl = window.location.href;
   const parts = currentUrl.split("/");
-  const quizId = parts[4] ? parts[4] : "";
+  const quizId = parts[5] ? parts[5] : "";
 
   // Получаем тест по quizId
   const quiz = getItem(`quiz_${quizId}`);
@@ -256,12 +256,12 @@ export function renderPassQuiz(app) {
     document.getElementById("nextBtn").disabled = false;
   }
 
-function updateProgressBar(totalQuestions) {
-  const progressBar = document.getElementById("progressBar");
-  const answeredCount = answeredQuestions.filter(Boolean).length;
-  const progressPercentage = (answeredCount / totalQuestions) * 100;
-  progressBar.style.width = `${progressPercentage}%`;
-}
+  function updateProgressBar(totalQuestions) {
+    const progressBar = document.getElementById("progressBar");
+    const answeredCount = answeredQuestions.filter(Boolean).length;
+    const progressPercentage = (answeredCount / totalQuestions) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+  }
 
   document.getElementById("nextBtn").onclick = function () {
     if (!checkAnswer()) return;

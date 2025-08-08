@@ -6,13 +6,27 @@ export function header(app) {
     `
          <header class="header container">
          <section class="header-body">
-            <div class="header-menu">
-            <a href="#home" class="header-link">Главная меню</a>
-            <a href="#create_test" class="header-link">Создать тест</a>
-            <a href="#solve_test" class="header-link">Список тестов</a>
+            <a href="#menu" class="burger-menu">
+            <img src="../../utils/images/burger-button.svg" alt="burger-menu icon">
+            </a>
+            <div class="menu-overlay" id="menu">
+            
+            <div class="header-burger-menu-stack">
+                <a href="#home" class="header-link-burger">Главная меню</a>
+                <a href="#create_test" class="header-link-burger">Создать тест</a>
+                <a href="#solve_test" class="header-link-burger">Список тестов</a>
             </div>
-            <button id="themeToggle">Переключить тему</button>
-            <a href="#menu" class="burger-menu"></a>
+            <div class="close-btn-container">
+                <a href="#" class="close-btn">+</a>
+            </div>    
+            </div>
+            <div class="header-menu">
+                <a href="#home" class="header-link">Главная меню</a>
+                <a href="#create_test" class="header-link">Создать тест</a>
+                <a href="#solve_test" class="header-link">Список тестов</a>
+            </div>
+                <button id="themeToggle">Переключить тему</button>
+            
             </section>
         </header>
     `,
