@@ -221,6 +221,14 @@ body {
   color: #00ab78;
   transition: 0.5s;
 }
+
+.burger-menu {
+  display: none;
+}
+.menu-overlay {
+  display: none;
+}
+
 .answers {
   display: flex;
   flex-direction: column;

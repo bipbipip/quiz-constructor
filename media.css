@@ -52,6 +52,59 @@
     
 }
 
+@media screen and (max-width: 800px) {
+    .burger-menu {
+        display: flex;
+        height: 40px;
+        margin-left: 20px;
+    }
+    .header-menu {
+        display: none;
+    }
+    .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color);
+        z-index: 1;
+    }
+    .menu-overlay:target {
+        display: flex;
+        left: 0;
+        justify-content: space-between;
+        padding: 20px
+    }
+    .header-burger-menu-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .header-link-burger {
+        font-family: 'Poiret One', sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+        color: var(--change-theme-text);
+        border: 1px solid var(--change-theme-text);
+        border-radius: 10px;
+        padding: 5px 10px;
+    }
+    .close-btn-container {
+        height: 45px;
+        rotate: 45deg;
+    }
+    .close-btn {
+
+        font-family: 'Poiret One', sans-serif;
+        font-size: 72px;
+        font-weight: bold;
+        text-decoration: none;
+        color: var(--change-theme-text);
+
+    }
+}
 @media screen and (max-width: 768px) {
     
     .quiz-container {
