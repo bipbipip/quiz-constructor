@@ -6,10 +6,11 @@ export function renderHomePage(app) {
   render(
     app,
     `
-        <div class="home container">
+    <section class="home-intro container">
+        <div class="home">
             <h1 class="home-section-head">Создавайте увлекательные квизы!</h1>
             <section class="home-section">
-            <h2 class="home-section-head">Легкий и мощный конструктор квизов поможет вам:</h2>
+            <h2 class="home-section-subhead">Легкий и мощный конструктор квизов поможет вам:</h2>
                  <div class="home-section-intro">
                     <ul class="home-section-list">
                         <li class="home-section-list-item">Генерировать викторины, тесты и опросы без программирования</li>
@@ -18,7 +19,7 @@ export function renderHomePage(app) {
                         <li class="home-section-list-item">Анализировать результаты и вовлеченность аудитории</li>
                     </ul>
                 </div>
-            <h2 class="home-section-head">Кому подойдет наш конструктор?</h2>
+            <h2 class="home-section-subhead">Кому подойдет наш конструктор?</h2>
                 <div class="home-section-intro">
                   <ul class="home-section-list">
                           <li class="home-section-list-item">Преподавателям – для интерактивного обучения и проверки знаний</li>
@@ -27,9 +28,11 @@ export function renderHomePage(app) {
                           <li class="home-section-list-item">Блогерам и контент-мейкерам – для развлечения подписчиков</li>
                       </ul>
                 </div>
+                
             </section>
             
         </div>
+    </section>
     `,
   );
 }

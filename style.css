@@ -383,6 +383,10 @@ body {
   color: white;
   font-size: 18px;
 }
+.home-intro {
+  display: flex;
+  justify-content: center;
+}
 .home {
   display: flex;
   flex-direction: column;
@@ -402,9 +406,10 @@ body {
 }
 .home-section-head {
   font-family: 'Bebas-Neue';
-
-
 }
+.home-section-subhead {
+  font-family: 'Bebas-Neue';
+} {}
 .home-section-list {
   font-family: "Poiret One";
   font-weight: bold;
