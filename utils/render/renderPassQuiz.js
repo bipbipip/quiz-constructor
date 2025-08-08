@@ -2,16 +2,7 @@ import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { getItem } from "../../storage.js";
 
-// Функция для добавления стилей на страницу
-function addStyles() {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "../style.css";
-  document.head.appendChild(link);
-}
-
 export function renderPassQuiz(app) {
-  addStyles();
   header(app);
 
   const quizHtml = `
@@ -45,7 +36,7 @@ export function renderPassQuiz(app) {
   // Получаем quizId из URL
   const currentUrl = window.location.href;
   const parts = currentUrl.split("/");
-  const quizId = parts[5] ? parts[5] : "";
+  const quizId = parts[4] ? parts[4] : "";
 
   // Получаем тест по quizId
   const quiz = getItem(`quiz_${quizId}`);

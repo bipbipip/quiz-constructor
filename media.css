@@ -1,0 +1,107 @@
+@media screen and (max-width: 1200px) {
+     
+     .home-section-head {
+         font-size: 14px;
+     }
+     .question {
+         font-size: 14px;
+     }
+     .quiz-container {
+         max-width: 968px;
+     }
+     .test-buttons {
+     }
+}
+
+
+@media screen and (max-width: 1024px) {
+    .progress-container {
+        max-width: 75%;
+       
+       
+      
+      }
+
+    .pass-quiz {
+        gap: 10px;
+    }
+      .quiz-body {
+        
+      }
+
+    .quiz-container {
+        display: flex;
+        justify-content: center;
+        max-width: 750px;
+        font-size: 14px;
+        gap: 10px;
+        width: 100%;
+    }
+    .quiz-container h2 {
+        font-size: 14px;
+    }
+    .quiz-container p{
+        font-size: 12px;
+    }
+    .question {
+        font-size: 12px;
+    }
+    .checkbox label {
+        font-size: 12px;
+    }
+    
+}
+
+@media screen and (max-width: 768px) {
+    
+    .quiz-container {
+        max-width: 420px;
+
+    }
+    .test-buttons {
+        flex-direction: column;
+        gap: 10px;
+        
+
+    }
+    .timer {
+        font-size: 16px;
+    }
+    
+    .btn {
+        padding: 5px;
+        max-width: 80px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .quiz-container{
+        max-width: 370px;
+    }
+    .btn {
+        font-size: 12px;
+    }
+    .timer {
+        font-size: 14px;
+    }
+
+}
+
+@media screen and (max-width: 375px) {
+    .quiz-container{
+        max-width: 310px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+.quiz-container{
+        max-width: 270px;
+    }
+
+}
+
+@media screen and (max-width: 280px) {
+
+
+
+}
