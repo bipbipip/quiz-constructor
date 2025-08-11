@@ -2,14 +2,11 @@ import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { setItem, getItem, updateItem, removeItem } from "../../storage.js";
 import {
-  addQuestion,
   setupAddQuestion,
-  addAnswer,
-  addDetailedAnswer,
   getRandomString,
   validateQuiz,
-  setupSaveQuiz,
 } from "./renderCreateQuiz.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderEditQuiz(app) {
   header(app);
@@ -17,7 +14,7 @@ export function renderEditQuiz(app) {
   render(
     app,
     `
-    <div class="create-intro container">
+    <div class="create-intro full-page container">
         <div class="create ">
             <h1 class="home-section-head">Изменить тест</h1>
             <div class="create-quiz">
@@ -33,7 +30,7 @@ export function renderEditQuiz(app) {
     </div>
     `,
   );
-
+  footer(app);
   setupEditQuiz();
 }
 

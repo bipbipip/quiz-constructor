@@ -1,13 +1,14 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { getItem } from "../../storage.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderPreviewQuiz(app) {
   header(app);
 
   const quizHtml = `
-      <div class="quiz-body">
-        <div class="quiz-container">
+      <div class="quiz-body full-page">
+        <div class="quiz-container ">
             <div id="quiz" class="preview-quiz"></div>
             <div class="test-buttons">
             <button class="btn hidden" id="backBtn" onclick="goBack()">Назад</button>
@@ -19,6 +20,7 @@ export function renderPreviewQuiz(app) {
     `;
 
   render(app, quizHtml); // Рендерим HTML для теста
+  footer(app);
   setupPreviewQuiz();
 }
 
