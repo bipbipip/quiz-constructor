@@ -1,12 +1,13 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderHomePage(app) {
   header(app);
   render(
     app,
     `
-    <section class="home-intro container">
+    <section class="home-intro full-page container">
         <div class="home">
             <h1 class="home-section-head">Создавайте увлекательные квизы!</h1>
             <section class="home-section">
@@ -35,4 +36,5 @@ export function renderHomePage(app) {
     </section>
     `,
   );
+  footer(app);
 }

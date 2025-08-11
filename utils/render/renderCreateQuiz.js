@@ -1,6 +1,7 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { setItem, getItem, updateItem, removeItem } from "../../storage.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderCreateQuiz(app) {
   header(app);
@@ -8,7 +9,7 @@ export function renderCreateQuiz(app) {
   render(
     app,
     `
-        <div class="create-intro container">
+        <div class="create-intro full-page container">
           <div class="create">
               <h1 class="home-section-head">Создать тест</h1>
               <div class="create-quiz">
@@ -24,7 +25,7 @@ export function renderCreateQuiz(app) {
         </div>
     `,
   );
-
+  footer(app);
   setupAddQuestion();
   setupSaveQuiz();
   setupAutoSave();
@@ -459,7 +460,7 @@ function restoreQuestionsSequentially(questions, index) {
 
       // Имитируем изменение типа с задержкой
       setTimeout(() => {
-        const event = new Event("change", { bubbles: true });
+        const event = new Event("change");
         questionSelect.dispatchEvent(event);
 
         // После изменения типа заполняем ответы

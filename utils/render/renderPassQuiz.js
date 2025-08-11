@@ -1,12 +1,13 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
 import { getItem } from "../../storage.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderPassQuiz(app) {
   header(app);
 
   const quizHtml = `
-    <div class="quiz-body">
+    <div class="quiz-body full-page">
         <div class="quiz-container">
             <div id="quiz" class="pass-quiz"></div>
             <div class="test-buttons">
@@ -24,6 +25,7 @@ export function renderPassQuiz(app) {
     `;
 
   render(app, quizHtml);
+  footer(app);
 
   let timer;
   let totalTime; // Общее время на викторину

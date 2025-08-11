@@ -1,16 +1,21 @@
 import { header } from "../../components/header/header.js";
 import { render } from "./render.js";
+import { footer } from "../../components/footer/footer.js";
 
 export function renderQuizList(app) {
   header(app);
 
   const quizHtml = `
-        <div class="quizzes container">
+      <section class="quizzes-intro full-page container">
+        <div class="quizzes ">
             <div id="quiz" class="quiz-grid "></div>
         </div>
+      </section>
+      <div id="loader" class="loader" style="display: none;"></div>
     `;
 
   render(app, quizHtml);
+  footer(app);
 
   const quizzes = Object.keys(localStorage)
     .filter((key) => key.startsWith("quiz_"))

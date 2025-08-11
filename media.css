@@ -14,10 +14,8 @@
 @media screen and (max-width: 1024px) {
     .progress-container {
         max-width: 75%;
-       
-       
-      
       }
+
 
     .pass-quiz {
         gap: 10px;
@@ -46,7 +44,13 @@
     .checkbox label {
         font-size: 12px;
     }
-    
+    .footer-body {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .home-intro {
+        min-height: calc(100vh - 170px);
+    }
 }
 
 @media screen and (max-width: 800px) {
@@ -82,6 +86,12 @@
         padding: 5px;
         max-width: 80px;
     }
+    .quiz-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .quiz-card-name {
+        font-size: 16px;
+    }
 }
 @media screen and (max-width: 600px) {
     .home {
@@ -111,6 +121,15 @@
     .answer-wrapper {
         font-size: 12px;
     }
+    .footer-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .footer-paragraph {
+        font-size: 12px;
+    }
+
 }
 
 @media screen and (max-width: 425px) {
@@ -135,6 +154,15 @@
     }
     .main-input-textarea {
         min-width: 200px;
+    }
+    .quiz-card-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .footer-paragraph {
+        font-size: 8px;
+        text-align: center;
     }
 }
 
@@ -164,10 +192,12 @@
     .home-section-list {
         font-size: 8px;
     }
-.quiz-container{
+    .quiz-container{
         max-width: 270px;
     }
-
+    .quiz-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 @media screen and (max-width: 280px) {

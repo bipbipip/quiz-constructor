@@ -231,7 +231,7 @@ body {
 }
 .burger {
   position: relative;
-  z-index: 10;
+
   cursor: pointer;
   display: block;
   border: none;
@@ -285,6 +285,7 @@ body {
   width: 200px;
   border: 1px solid var(--text-color);
   border-radius: 10px;
+  z-index: 1;
 }
 .menu-item {
   font-family: "Bebas-Neue";
@@ -460,13 +461,18 @@ body {
 .home-intro {
   display: flex;
   justify-content: center;
+
+}
+.full-page {
+  min-height: calc(100vh - 150px);
 }
 .home {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 50px;
+  margin: 50px 0;
   width: fit-content;
+  height: fit-content;
   gap: 20px;
   padding: 20px;
   border: #ccc 1px solid;
@@ -506,6 +512,7 @@ body {
   border-radius: 20px;
   max-width: 600px;
   width: 100%;
+  height: fit-content;
 }
 .create-quiz {
   display: flex;
@@ -658,11 +665,37 @@ input[type="checkbox"].checkbox:checked:after {
   border: #ccc 1px solid;
   border-radius: 20px;
   padding: 20px;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin: 50px 20px;
+  height: fit-content;
 }
 .create-intro {
   display: flex;
   justify-content: center;
+
+}
+.quizzes-intro {
+  display: flex;
+  justify-content: center;
+}
+.footer {
+  margin-bottom: 24px;
+
+  width: 100%;
+  align-items: center;
+}
+.footer-body {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 0;
+  border-top: 1px solid var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+}
+.footer-paragraph {
+  font-family: "Poiret One";
+  font-weight: bold;
+  padding: 0 20px;
 }
 /*//////////////////////*/
